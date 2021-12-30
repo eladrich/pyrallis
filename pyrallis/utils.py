@@ -1,12 +1,11 @@
 """Utility functions used in various parts of the pyrallis package."""
 import argparse
 import builtins
-import collections
 import dataclasses
 import enum
 import inspect
 from collections import OrderedDict
-from collections import abc as c_abc
+import collections.abc as c_abc
 from dataclasses import _MISSING_TYPE
 from enum import Enum
 from logging import getLogger
@@ -525,7 +524,7 @@ def flatten(d, parent_key='', sep='.'):
     items = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k
-        if isinstance(v, collections.MutableMapping):
+        if isinstance(v, c_abc.MutableMapping):
             items.extend(flatten(v, new_key, sep=sep).items())
         else:
             items.append((new_key, v))

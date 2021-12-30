@@ -20,7 +20,7 @@ With `pyrallis` your configuration is linked directly to your pre-defined `datac
 
 The best way to understand `pyrallis` is through examples, let's get started!
 
-###  🐲: 1/5 `pyrallis.ArgumentParser` for `dataclass` Parsing 🐲:
+###  🐲 1/5 `pyrallis.ArgumentParser` for `dataclass` Parsing 🐲
 
 Creation of an argparse configuration is really simple, just use `pyrallis.ArgumentParser` on your predefined dataclass.
 
@@ -73,7 +73,7 @@ TrainConfig ['options']:
 
 
 
-### 🐲: 2/5 The `pyrallis.wrap` Decorator 🐲:
+### 🐲 2/5 The `pyrallis.wrap` Decorator 🐲
 The `pyrallis.ArgumentParser` syntax is too cumbersome?
 ```python
 def main():
@@ -90,7 +90,7 @@ def main(cfg: TrainConfig):
 We will use this syntax for the rest of our tutorial.
 
 
-### 🐲: 3/5 Better Configs Using Inherent `dataclass` Features 🐲:
+### 🐲 3/5 Better Configs Using Inherent `dataclass` Features 🐲
 When using a dataclass we can add additional functionality using existing `dataclass` features, such as the `post_init` mechanism or `@properties` :grin:
 ```python
 from dataclasses import dataclass, field
@@ -137,7 +137,7 @@ Training my_second_exp...
 > Notice that in all examples we use the explicit `dataclass.field` syntax. This isn't a requirement of `pyrallis` but rather a style choice. As some of your arguments will probably require `dataclass.field` (mutable types for example) we find it cleaner to always use the same notation.
 
 
-### 🐲: 4/5 Building Hierarchical Configurations 🐲:
+### 🐲 4/5 Building Hierarchical Configurations 🐲
 Sometimes configs get too complex for a flat hierarchy 😕, luckily `pyrallis` supports nested dataclasses 💥
 
 ```python
@@ -190,7 +190,7 @@ Training my_third_exp...
     Saving to /share/experiments/my_third_exp
 ```
 
-### 🐲: 5/5 Easy Serialization with `pyrallis.dump` 🐲:
+### 🐲 5/5 Easy Serialization with `pyrallis.dump` 🐲
 As your config get longer you will probably want to start working with configuration files. Pyrallis supports encoding a dataclass configuration into a `yaml` file 💾
 
 The command `pyrallis.dump(cfg, open('run_config.yaml','w'))` will result in the following `yaml` file

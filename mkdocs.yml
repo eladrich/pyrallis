@@ -1,4 +1,6 @@
 site_name: Pyrallis
+repo_name: 'eladrich/pyrallis'
+repo_url: 'https://github.com/eladrich/pyrallis'
 theme:
   name: material
   palette:

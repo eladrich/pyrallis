@@ -25,7 +25,7 @@ setuptools.setup(
     description="A framework for simple dataclass-based configurations.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/eladrich/pyrallis",
+    url="https://eladrich.github.io/pyrallis/",
     packages=packages,
     package_data={"pyrallis": ["py.typed"]},
     classifiers=[

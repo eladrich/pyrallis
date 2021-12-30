@@ -1,4 +1,4 @@
-__version__ = "0.1.2.1"
+__version__ = "0.1.3"
 
 from . import wrappers, utils
 from pyrallis.help_formatter import SimpleHelpFormatter

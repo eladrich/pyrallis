@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/eladrich/pyrallis/blob/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/eladrich/pyrallis/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
 
 
 # Pyrallis - Simple Configuration with Dataclasses
@@ -8,7 +8,7 @@
 `Pyrallis` is a simple library, derived from `simple-parsing`, for automagically creating project configuration from a dataclass.
 
 
-<p align="center"><img src="https://github.com/eladrich/pyrallis/blob/master/docs/argparse2pyrallis.gif" alt="GIF" width="100%" /></p>
+<p align="center"><img src="https://github.com/eladrich/pyrallis/raw/master/docs/argparse2pyrallis.gif" alt="GIF" width="100%" /></p>
 
 ## Why `pyrallis`?
 

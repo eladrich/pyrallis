@@ -1,0 +1,34 @@
+site_name: Pyrallis
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: "blue grey"
+  logo: pyrallis_only_logo.png
+  favicon: pyrallis_only_logo.png
+  features:
+    - navigation.tabs
+    - toc.integrate
+    - content.code.annotate
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+        alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+
+nav:
+  - Welcome to Pyrallis: "index.md"
+  - Pyrallis Step by Step: "step_by_step.md"
+#  - The Pyrallis API: ""
+#  - On Dataclasses and Typing: ""
+#  - Design Choices: ""

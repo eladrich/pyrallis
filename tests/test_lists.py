@@ -40,10 +40,10 @@ def test_single_element_list(ContainerClass):
 
 
 def test_required_attributes_works(ContainerClass):
-    with raises_missing_required_arg():
+    with raises(TypeError):
         ContainerClass.setup("--b [4]")
 
-    with raises_missing_required_arg():
+    with raises(TypeError):
         ContainerClass.setup("--a [4]")
 
     container = ContainerClass.setup("--a [4] --b [5]")

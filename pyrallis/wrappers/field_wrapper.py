@@ -4,9 +4,9 @@ import inspect
 from logging import getLogger
 from typing import Any, Optional, List, Type, Dict, Set, Union, Tuple
 
+from . import docstring
 from .wrapper import Wrapper
 from .. import utils
-from . import docstring
 
 logger = getLogger(__name__)
 
@@ -93,7 +93,8 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         # 5. Return that dictionary.
         _arg_options: Dict[str, Any] = {}
 
-        _arg_options["required"] = self.required
+        _arg_options["required"] = False  # Required arguments can also be set from yaml,
+                                          # so do not enforce with argparse
         _arg_options["dest"] = self.dest
         _arg_options["default"] = self.default
 

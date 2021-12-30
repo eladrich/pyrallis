@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from .testutils import *
 
 
-def test_no_default_argument(simple_attribute, silent):
+def test_no_default_argument(simple_attribute):
     some_type, passed_value, expected_value = simple_attribute
 
     @dataclass
@@ -15,7 +15,7 @@ def test_no_default_argument(simple_attribute, silent):
     cfg = parser.parse_args(shlex.split(f"--a {passed_value}"))
     assert cfg == SomeClass(a=expected_value)
 
-    with raises_missing_required_arg():
+    with raises(TypeError):
         parser.parse_args("")
 
 

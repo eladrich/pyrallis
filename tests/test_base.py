@@ -25,7 +25,7 @@ def test_not_passing_required_argument_raises_error(simple_attribute):
     class SomeDataclass(TestSetup):
         some_attribute: some_type  # type: ignore
 
-    with raises_missing_required_arg():
+    with raises(TypeError):
         _ = SomeDataclass.setup("")
 
 
@@ -79,7 +79,7 @@ def test_not_providing_required_argument_throws_error(some_type):
         a: some_type  # type: ignore
         """some docstring for attribute 'a'"""
 
-    with raises(SystemExit):
+    with raises(TypeError):
         _ = SomeClass.setup("")
 
 

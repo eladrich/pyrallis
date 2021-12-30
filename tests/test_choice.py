@@ -1,3 +1,4 @@
+from builtins import TypeError
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -32,7 +33,7 @@ def test_passing_enum_to_choice_no_default_makes_required_arg():
     class Something(TestSetup):
         favorite_color: Color = field()
 
-    with raises(SystemExit):
+    with raises(TypeError):
         s = Something.setup("")
 
     s = Something.setup("--favorite_color blue")

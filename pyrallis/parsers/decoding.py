@@ -84,8 +84,7 @@ def decode_dataclass(
     try:
         instance = cls(**init_args)  # type: ignore
     except TypeError as e:
-        # raise RuntimeError(f"Couldn't instantiate class {cls} using init args {init_args}.")
-        raise RuntimeError(
+        raise TypeError(
             f"Couldn't instantiate class {cls} using init args {init_args.keys()}: {e}"
         )
 

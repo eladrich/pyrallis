@@ -108,7 +108,8 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         _arg_options['type'] = self.type
         try:
             _arg_options['type'].__name__ = self.type.__repr__().replace('typing.', '')
-        except TypeError as e:
+        except Exception as e:
+            # Only to prettify printing, if fails just continue
             pass
 
         return _arg_options

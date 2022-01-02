@@ -22,10 +22,6 @@ from pyrallis.wrappers import DataclassWrapper
 logger = getLogger(__name__)
 
 
-class ParsingError(RuntimeError, SystemExit):
-    pass
-
-
 T = TypeVar('T')
 
 

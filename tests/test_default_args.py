@@ -15,7 +15,7 @@ def test_no_default_argument(simple_attribute):
     cfg = parser.parse_args(shlex.split(f"--a {passed_value}"))
     assert cfg == SomeClass(a=expected_value)
 
-    with raises(TypeError):
+    with raises(ParsingError):
         parser.parse_args("")
 
 

@@ -15,10 +15,54 @@
 With `pyrallis` your configuration is linked directly to your pre-defined `dataclass`, allowing you to easily create different configuration structures, including nested ones, using an object-oriented design. The parsed arguments are used to initialize your `dataclass`, giving you the typing hints and automatic code completion of a full `dataclass` object.
 
 
+## My First Pyrallis Example 👶
+There are several key features to pyrallis but at its core pyrallis simply allows defining an argument parser using a dataclass.
 
-## Getting to Know `pyrallis` in 5 Simple Steps 🐲
+```python 
+from dataclasses import dataclass
+from pyrallis import ArgumentParser
 
-The best way to understand `pyrallis` is through examples, let's get started!
+
+@dataclass
+class TrainConfig:
+    """ Training config for Machine Learning """
+    workers: int = 8 # The number of workers for training
+    exp_name: str = 'default_exp' # The experiment name
+
+def main():
+    cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+    print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
+
+```
+
+The arguments can then be specified using command-line arguments, a `yaml` configuration file, or both.
+
+```console
+$ python train_model.py --CONFIG=some_config.yaml --exp_name=my_first_exp
+Training my_first_exp with 42 workers...
+```
+Assuming the following configuration file
+```yaml
+exp_name: my_yaml_exp
+workers: 42
+```
+
+### Key Features
+Building on that design `pyrallis` offers some really enjoyable features including 
+
+* Builtin IDE support for autocompletion and linting thanks to the structured config. 🤓
+* Joint reading from command-line and a config file, with support for specifying a default config file. 😍
+* Support for builtin dataclass features, such as `__post_init__` and `@property` 😁
+* Support for nesting and inheritance of dataclasses, nested arguments are automatically created! 😲
+* A magical `@pyrallis.wrap()` decorator for wrapping your main class 🪄
+* Easy extension to new types using `pyrallis.encode.register` and `pyrallis.decode.register` 👽
+* Easy loading and saving of existing configurations using `pyrallis.dump` and `pyrallis.load` 💾
+* Magical `--help` creation from dataclasses, taking into account the comments as well! 😎
+
+
+## Getting to Know The `pyrallis` API in 5 Simple Steps 🐲
+
+The best way to understand the full `pyrallis` API is through examples, let's get started!
 
 ###  🐲 1/5 `pyrallis.ArgumentParser` for `dataclass` Parsing 🐲
 
@@ -316,4 +360,7 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 - [ ] Create documentation page?
 > Create a full documentation with mkdocs
 - [ ] Improve warnings and logs
+> Find a better way to show what failed
 - [ ] Think on relative paths
+- [ ] Fix error with default Dict and List
+>         Underlying error: No decoding function for type ~KT, consider using pyrallis.decode.register

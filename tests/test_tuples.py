@@ -12,7 +12,7 @@ def test_tuple_with_n_items_takes_only_n_values():
     assert c.ints == (1, 5)
     c = Container.setup("--ints [4,8]")
     assert c.ints == (4, 8)
-    with raises(TypeError):
+    with raises(ParsingError):
         c = Container.setup("--ints [4,5,6,7,8]")
 
 

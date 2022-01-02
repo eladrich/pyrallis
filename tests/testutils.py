@@ -20,8 +20,8 @@ import pytest
 import pyrallis
 from pyrallis import (
     ArgumentParser,
-    ParsingError,
     SimpleHelpFormatter,
+    ParsingError
 )
 from pyrallis.wrappers import DataclassWrapper
 

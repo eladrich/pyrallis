@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Type, Any
 
-from pyrallis import ArgumentParser
+from pyrallis import ArgumentParser, ParsingError
 from .testutils import parametrize, TestSetup, raises_missing_required_arg, raises
 
 
@@ -25,7 +25,7 @@ def test_not_passing_required_argument_raises_error(simple_attribute):
     class SomeDataclass(TestSetup):
         some_attribute: some_type  # type: ignore
 
-    with raises(TypeError):
+    with raises(ParsingError):
         _ = SomeDataclass.setup("")
 
 
@@ -79,7 +79,7 @@ def test_not_providing_required_argument_throws_error(some_type):
         a: some_type  # type: ignore
         """some docstring for attribute 'a'"""
 
-    with raises(TypeError):
+    with raises(ParsingError):
         _ = SomeClass.setup("")
 
 

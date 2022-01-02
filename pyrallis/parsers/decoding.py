@@ -16,7 +16,8 @@ from pyrallis.utils import (
     is_set,
     is_tuple,
     is_union,
-    is_enum
+    is_enum,
+    ParsingError
 )
 
 logger = getLogger(__name__)
@@ -67,7 +68,12 @@ def decode_dataclass(
             continue
 
         raw_value = obj_dict.pop(name)
-        field_value = decode_field(field, raw_value)
+        try:
+            field_value = decode_field(field, raw_value)
+        except ParsingError as e:
+            raise e
+        except Exception as e:
+            raise ParsingError(f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error: {e}")
 
         if field.init:
             init_args[name] = field_value
@@ -84,8 +90,8 @@ def decode_dataclass(
     try:
         instance = cls(**init_args)  # type: ignore
     except TypeError as e:
-        raise TypeError(
-            f"Couldn't instantiate class {cls} using init args {init_args.keys()}: {e}"
+        raise ParsingError(
+            f"Couldn't instantiate class {cls} using the given arguments.\n\t Underlying error: {e}"
         )
 
     for name, value in non_init_args.items():
@@ -251,7 +257,9 @@ def decode_list(t: Type[T]) -> Callable[[List[Any]], List[T]]:
     decode_item = get_decoding_fn(t)
 
     def _decode_list(val: List[Any]) -> List[T]:
-        assert type(val) == list
+        # assert type(val) == list
+        if type(val) != list:
+            raise Exception(f"The given value='{val}' is not of a valid input")
         return [decode_item(v) for v in val]
 
     return _decode_list
@@ -284,6 +292,8 @@ def decode_tuple(*tuple_item_types: Type[T]) -> Callable[[List[T]], Tuple[T, ...
     # last type is used.
 
     def _decode_tuple(val: Tuple[Any, ...]) -> Tuple[T, ...]:
+        if val is None:
+            raise TypeError('Value must not be None for conversion to a tuple')
         if has_ellipsis:
             return tuple(decoding_fn(v) for v in val)
         else:

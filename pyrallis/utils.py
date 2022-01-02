@@ -65,6 +65,12 @@ TRUE_STRINGS: List[str] = ["yes", "true", "t", "y", "1"]
 FALSE_STRINGS: List[str] = ["no", "false", "f", "n", "0"]
 
 
+class PyrallisException(Exception):
+    pass
+
+class ParsingError(PyrallisException):
+    pass
+
 def str2bool(raw_value: Union[str, bool]) -> bool:
     """
     Taken from https://stackoverflow.com/questions/15008758/parsing-boolean-values-with-argparse

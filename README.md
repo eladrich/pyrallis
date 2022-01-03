@@ -270,12 +270,12 @@ Finally, one can easily extend the serialization to support new types 🔥
 pyrallis.decode.register(np.ndarray,np.asarray)
 
 # For encoding to yaml 
-pyrallis.encode.register(np.ndarray, lambda x: str(list(x)))
+pyrallis.encode.register(np.ndarray, lambda x: x.tolist())
 
 # Or with the wrapper version instead 
 @pyrallis.encode.register
 def encode_array(arr : np.ndarray) -> str:
-    return str(list(arr))
+    return arr.tolist()
 ```
 
 #### 🐲 That's it you are now a `pyrallis` expert! 🐲

@@ -61,23 +61,9 @@ def encode(obj: T) -> T: ...
 
 @singledispatch
 def encode(obj: Any) -> Any:
-    """Encodes an object into a json/yaml-compatible primitive type.
-
-    This called to convert field attributes when calling `to_dict()` on a
-    `DictSerializable` instance (including JsonSerializable and YamlSerializable).
-
-    This is used as the 'default' keyword argument to `json.dumps` and
-    `json.dump`, and is called when an object is encountered that `json` doesn't
-    know how to serialize.
-
-    To register a type as JsonSerializable, you can just register a custom
-    serialization function. (There should be no need to do it for dataclasses,
-    since that is supported by this function), use @encode.register
-    (see the docs for singledispatch).
-    """
+    """ Encodes an object into a json/yaml-compatible primitive type. """
     try:
         if is_dataclass(obj):
-            # logger.debug(f"encoding object {obj} of class {type(obj)}")
             d: Dict[str, Any] = dict()
             for field in fields(obj):
                 value = getattr(obj, field.name)

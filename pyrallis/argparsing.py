@@ -9,7 +9,7 @@ from argparse import HelpFormatter, Namespace
 from collections import defaultdict
 from functools import wraps
 from logging import getLogger
-from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic
+from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic, Optional
 
 import yaml
 
@@ -29,24 +29,12 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
     def __init__(
             self,
             config_class: Type[T],
-            config_path: str = None,
+            config_path: Optional[str] = None,
             formatter_class: Type[HelpFormatter] = SimpleHelpFormatter,
             *args,
             **kwargs,
     ):
-        """Creates an ArgumentParser instance.
-
-        Parameters
-        ----------
-
-        - formatter_class : Type[HelpFormatter], optional
-
-            The formatter class to use. By default, uses
-            `pyrallis.SimpleHelpFormatter`, which is a combination of the
-            `argparse.ArgumentDefaultsHelpFormatter`,
-            `argparse.MetavarTypeHelpFormatter` and
-            `argparse.RawDescriptionHelpFormatter` classes.
-        """
+        """ Creates an ArgumentParser instance. """
         kwargs["formatter_class"] = formatter_class
         super().__init__(*args, **kwargs)
 
@@ -70,26 +58,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
             default: Union[Dataclass, Dict] = None,
             dataclass_wrapper_class: Type[DataclassWrapper] = DataclassWrapper,
     ):
-        """Adds command-line arguments for the fields of `dataclass`.
-
-        Parameters
-        ----------
-        dataclass : Union[Dataclass, Type[Dataclass]]
-            The dataclass whose fields are to be parsed from the commnad-line.
-            If an instance of a dataclass is given, it is used as the default
-            value if none is provided.
-        dest : str
-            The destination attribute of the `argparse.Namespace` where the
-            dataclass instance will be stored after calling `parse_args()`
-        prefix : str, optional
-            An optional prefix to add prepend to the names of the argparse
-            arguments which will be generated for this dataclass.
-            This can be useful when registering multiple distinct instances of
-            the same dataclass, by default ""
-        default : Dataclass, optional
-            An instance of the dataclass type to get default values from, by
-            default None
-        """
+        """ Adds command-line arguments for the fields of `dataclass`. """
         for wrapper in self._wrappers:
             if wrapper.dest == dest:
                 raise argparse.ArgumentError(
@@ -145,7 +114,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         self._wrappers += descendant_wrappers
 
     def _preprocessing(self) -> None:
-        """Resolve potential conflicts and actual add all the arguments."""
+        """ Add all the arguments."""
         logger.debug("\nPREPROCESSING\n")
         if self._preprocessing_done:
             return
@@ -161,7 +130,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
             wrapper.add_arguments(parser=self)
         self._preprocessing_done = True
 
-    def _postprocessing(self, parsed_args: Namespace) -> Type[T]:
+    def _postprocessing(self, parsed_args: Namespace) -> T:
         logger.debug("\nPOST PROCESSING\n")
         logger.debug(f"(raw) parsed args: {parsed_args}")
 

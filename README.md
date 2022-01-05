@@ -357,9 +357,9 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 
 
 # TODOs:
-- [ ] Create documentation page?
+- [x] Create documentation page
 > Create a full documentation with mkdocs
-- [ ] Improve warnings and logs
+- [x] Improve warnings and logs
 > Find a better way to show what failed
 - [ ] Think on relative paths
 - [ ] Fix error with default Dict and List

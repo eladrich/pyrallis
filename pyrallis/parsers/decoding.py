@@ -29,7 +29,7 @@ Dataclass = TypeVar("Dataclass")
 
 
 @singledispatch
-def decode(t: Type[T], raw_value: Any) -> Any:
+def decode(t: Type[T], raw_value: Any) -> T:
     return get_decoding_fn(t)(raw_value)
 
 
@@ -40,14 +40,7 @@ for t in [str, float, int, bool, bytes]:
 
 def decode_dataclass(
         cls: Type[Dataclass], d: Dict[str, Any]) -> Dataclass:
-    """Parses an instance of the dataclass `cls` from the dict `d`.
-
-    Raises:
-        RuntimeError: If an error is encountered while instantiating the class.
-
-    Returns:
-        Dataclass: An instance of the dataclass `cls`.
-    """
+    """ Parses an instance of the dataclass `cls` from the dict `d`. """
     if d is None:
         return None
     obj_dict: Dict[str, Any] = d.copy()
@@ -73,7 +66,8 @@ def decode_dataclass(
         except ParsingError as e:
             raise e
         except Exception as e:
-            raise ParsingError(f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error: {e}")
+            raise ParsingError(
+                f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error: {e}")
 
         if field.init:
             init_args[name] = field_value
@@ -101,22 +95,7 @@ def decode_dataclass(
 
 
 def decode_field(field: Field, raw_value: Any) -> Any:
-    """Converts a "raw" value (e.g. from json file) to the type of the `field`.
-
-    When serializing a dataclass to json, all objects are converted to dicts.
-    The values which have a special type (not str, int, float, bool) are
-    converted to string or dict. Hence this function allows us to recover the
-    original type of pretty much any field which is of type `Serializable`, or
-    has a registered decoding function (either through `register_decoding_fn` or
-    through having `decoding_fn` passed directly to the `field` function.
-
-    Args:
-        field (Field): `Field` object from a dataclass.
-        raw_value (Any): The `raw` value from deserializing the dataclass.
-
-    Returns:
-        Any: The "raw" value converted to the right type.
-    """
+    """ Converts a "raw" value (e.g. from json file) to the type of the `field`. """
     name = field.name
     field_type = field.type
     logger.debug(f"Decode name = {name}, type = {field_type}")
@@ -128,27 +107,12 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
     """Fetches/Creates a decoding function for the given type annotation.
 
     This decoding function can then be used to create an instance of the type
-    when deserializing dicts (which could have been obtained with JSON or YAML).
+    when deserializing dicts.
 
     This function inspects the type annotation and creates the right decoding
     function recursively in a "dynamic-programming-ish" fashion.
     NOTE: We cache the results in a `functools.lru_cache` decorator to avoid
     wasteful calls to the function. This makes this process pretty efficient.
-
-    Args:
-        t (Type[T]):
-            A type or type annotation. Can be arbitrarily nested.
-            For example:
-            - List[int]
-            - Dict[str, Foo]
-            - Tuple[int, str, Any],
-            - Dict[Tuple[int, int], List[str]]
-            - List[List[List[List[Tuple[int, str]]]]]
-            - etc.
-
-    Returns:
-        Callable[[Any], T]:
-            A function that decodes a 'raw' value to an instance of type `t`.
 
     """
     if t in decode.registry:
@@ -211,7 +175,7 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
 
     raise Exception(f"No decoding function for type {t}, consider using pyrallis.decode.register")
 
-    # Alternatively could have tried type as constructor, but could be have a surprising behaviour
+    # Alternatively could have tried type as constructor, but could have a surprising behaviour
     # return try_constructor(t)
 
 
@@ -266,14 +230,7 @@ def decode_list(t: Type[T]) -> Callable[[List[Any]], List[T]]:
 
 
 def decode_tuple(*tuple_item_types: Type[T]) -> Callable[[List[T]], Tuple[T, ...]]:
-    """Makes a parsing function for creating tuples.
-
-    Can handle tuples with different item types, for instance:
-    - `Tuple[int, Foo, str, float, ...]`.
-
-    Returns:
-        Callable[[List[T]], Tuple[T, ...]]: A parsing function for creating tuples.
-    """
+    """ Makes a parsing function for creating tuples. """
     # Get the decoding function for each item type
     has_ellipsis = False
     if Ellipsis in tuple_item_types:
@@ -306,14 +263,7 @@ def decode_tuple(*tuple_item_types: Type[T]) -> Callable[[List[T]], Tuple[T, ...
 
 
 def decode_set(item_type: Type[T]) -> Callable[[List[T]], Set[T]]:
-    """Makes a parsing function for creating sets with items of type `item_type`.
-
-    Args:
-        item_type (Type[T]): the type of the items in the set.
-
-    Returns:
-        Callable[[List[T]], Set[T]]: [description]
-    """
+    """ Makes a parsing function for creating sets with items of type `item_type`. """
     # Get the parsers fn for a list of items of type `item_type`.
     parse_list_fn = decode_list(item_type)
 
@@ -326,16 +276,7 @@ def decode_set(item_type: Type[T]) -> Callable[[List[T]], Set[T]]:
 def decode_dict(
         K_: Type[K], V_: Type[V]
 ) -> Callable[[List[Tuple[Any, Any]]], Dict[K, V]]:
-    """Creates a decoding function for a dict type. Works with OrderedDict too.
-
-    Args:
-        K_ (Type[K]): The type of the keys.
-        V_ (Type[V]): The type of the values.
-
-    Returns:
-        Callable[[List[Tuple[Any, Any]]], Dict[K, V]]: A function that parses a
-            Dict[K_, V_].
-    """
+    """ Creates a decoding function for a dict type. Works with OrderedDict too. """
     decode_k = get_decoding_fn(K_)
     decode_v = get_decoding_fn(V_)
 
@@ -360,26 +301,12 @@ def decode_dict(
 
 
 def no_op(v: T) -> T:
-    """Decoding function that gives back the value as-is.
-
-    Args:
-        v ([Any]): Any value.
-
-    Returns:
-        [type]: The value unchanged.
-    """
+    """ Decoding function that gives back the value as-is. """
     return v
 
 
 def try_constructor(t: Type[T]) -> Callable[[Any], Union[T, Any]]:
-    """Tries to use the type as a constructor. If that fails, returns the value as-is.
-
-    Args:
-        t (Type[T]): A type.
-
-    Returns:
-        Callable[[Any], Union[T, Any]]: A decoding function that might return nothing.
-    """
+    """ Tries to use the type as a constructor. If that fails, returns the value as-is. """
     return try_functions(lambda val: t(**val), lambda val: t(val))
 
 

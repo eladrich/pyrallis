@@ -130,8 +130,14 @@ class DataclassWrapper(Wrapper[Dataclass]):
                     default = getattr(default, self.name)
                 self._defaults.append(default)
         else:
-            default_field_value = utils.default_value(
-                self._field)  # NOTE: That's my problem, post_init was called here to create defaults, understand when defaults are used
+            try:
+                default_field_value = utils.default_value(self._field)
+            except TypeError as e:
+                # utils.default_value tries to construct the field to get default value and might fail
+                # if the field has some required arguments
+                logger.debug(
+                    f"Could not get default value for field '{self._field.name}'\n\tUnderlying Error: {e}")
+                default_field_value = dataclasses.MISSING
             if isinstance(default_field_value, _MISSING_TYPE):
                 self._defaults = []
             else:

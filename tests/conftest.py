@@ -54,12 +54,7 @@ def assert_equals_stdout(capsys):
     return should_equal
 
 
-@pytest.fixture(scope="module")
-def parser():
-    from .testutils import TestParser
 
-    _parser = TestParser()
-    return _parser
 
 
 @pytest.fixture

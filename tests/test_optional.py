@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from pyrallis import ArgumentParser
+import pyrallis
 from tests.testutils import TestSetup
 
 
@@ -15,11 +15,10 @@ def test_optional_seed():
 
     (Reproduces https://github.com/lebrice/SimpleParsing/issues/14#issue-562538623)
     """
-    parser = ArgumentParser(config_class=Config)
-    config = parser.parse_args("".split())
+    config = pyrallis.parse(config_class=Config,args="".split())
     assert config == Config()
 
-    config = parser.parse_args("--seed 123".split())
+    config = pyrallis.parse(config_class=Config, args="--seed 123".split())
     assert config == Config(123)
 
 

@@ -3,23 +3,15 @@
 Pyrallis is designed to have a relatively small API, you can get familiar with it below 📚
 
 ## Parsing Interface
-### pyrallis.ArgumentParser
+### pyrallis.parse
 ```python
-class ArgumentParser(Generic[T], argparse.ArgumentParser):
-    def __init__(
-            self,
-            config_class: Type[T],
-            config_path: str = None,
-            formatter_class: Type[HelpFormatter] = SimpleHelpFormatter,
-            *args,
-            **kwargs,
-    ):
+def parse(config_class: Type[T], config_path: Optional[str] = None, args = None) -> T:
 ```
-Create an ArgumentParser-like object for a specified dataclass. Calling `.parse_args()` on the initialized object will parse the available arguments and return an initialized dataclass of type `config_class`.
+Parses the available arguments and return an initialized dataclass of type `config_class`.
 
 Each dataclass attribute is mapped to a matching argparse argument, where nested arguments are concatenated with the dot notation. That is, if `config_class` contains a `config_class.compute.workers` attribute, the matching argparse argument will simply be `--compute.workers=42`. The full set of arguments is visible using the `--help` command.
 
-The ArgumentParser also searches for an optional `yaml` configuration file defined either with the default `config_path` parameter, or specified from command-line using the dedicated `--CONFIG` argument. The configuration file is mapped according to the `yaml` hierarchy.
+Pyrallis also searches for an optional `yaml` configuration file defined either with the default `config_path` parameter, or specified from command-line using the dedicated `--CONFIG` argument. The configuration file is mapped according to the `yaml` hierarchy.
 That is, if `config_class` contains a `config_class.compute.workers` attribute, the matching `yaml` argument would be
 ```yaml
 compute:
@@ -32,22 +24,19 @@ The overloading mechanism is defined so that default values can be overridden by
 
 * **config_class (A dataclass class)** - The dataclass that will define the parser
 * **config_path (str)** - An optional path to a default `yaml` configuration file. The parser will first load the arguments from there and will override them with command-line arguments.
-* **formatter_class** - The formatter class for printing
-
-Additional arguments are passed along to the standard ArgumentParser.
+* **args** - The arguments to parse, as in the `argparse.ArgumentParser.parse_args()` call. If None, parses from command-line
 
 
 > Returns
 
-An ArgumentParser object, where calling `.parse_args()` will return an initialized dataclass of type `config_class`.
+An initialized dataclass of type `config_class`.
 
 > Example:
 
 A small working example would look like that
 ```python title="train_model.py"  linenums="1"
 from dataclasses import dataclass
-from pyrallis import ArgumentParser
-
+import pyrallis
 
 @dataclass
 class TrainConfig:
@@ -56,7 +45,7 @@ class TrainConfig:
     exp_name: str = 'default_exp' # The experiment name
 
 def main():
-    cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 ```
 The arguments can then be specified using command-line arguments, a `yaml` configuration file, or both
@@ -86,7 +75,7 @@ TrainConfig ['options']:
 ```python
 def wrap(config_path=None)
 ```
-The pyrallis.ArgumentParser is very explicit and is designed to mimic the style of a regular ArgumentParser. Inspired by Hydra, Pyrallis also offers an alternative decorator that wraps your main function and automatically initializes a configuration class to match your function signature.
+Inspired by Hydra, Pyrallis also offers an alternative decorator that wraps your main function and automatically initializes a configuration class to match your function signature.
 
 > Parameters
 
@@ -94,7 +83,7 @@ The pyrallis.ArgumentParser is very explicit and is designed to mimic the style 
 
 > Returns
 
-A wrapped function, where the first argument is implicitly initialized from the ArgumentParser.
+A wrapped function, where the first argument is implicitly initialized with pyrallis.
 
 > Example
 === "@pyrallis.wrap"
@@ -108,11 +97,11 @@ A wrapped function, where the first argument is implicitly initialized from the 
         main() # Notice that cfg is not explicitly passed to main!
     ```
 
-=== "pyrallis.ArgumentParser"
+=== "pyrallis.parse"
 
     ``` python
     def main():
-        cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+        cfg = pyrallis.parse(config_class=TrainConfig)
         print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 
     if __name__ == '__main__':

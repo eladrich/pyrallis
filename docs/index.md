@@ -25,7 +25,7 @@ There are several key features to pyrallis but at its core pyrallis simply allow
 
     ``` python title="train_model.py"  linenums="1"
     from dataclasses import dataclass
-    from pyrallis import ArgumentParser
+    import pyrallis
     
     
     @dataclass
@@ -35,7 +35,7 @@ There are several key features to pyrallis but at its core pyrallis simply allow
         exp_name: str = 'default_exp' # The experiment name
 
     def main():
-        cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+        cfg = pyrallis.parse(config_class=TrainConfig)
         print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 
     ```
@@ -75,9 +75,10 @@ workers: 42
 Building on that design pyrallis offers some really enjoyable features including 
 
 * Builtin IDE support for autocompletion and linting thanks to the structured config.
-* Joint reading from command-line and a config file, with support for specifying default config_path for the ArgumentParser
+* Joint reading from command-line and a config file, with support for specifying default config_path for the `pyrallis.parse` call
 ```python
-cfg = ArgumentParser(config_class=TrainConfig,config_path='/configs/default_config.yaml').parse_args()
+cfg = pyrallis.parse(config_class=TrainConfig, 
+                     config_path='/configs/default_config.yaml')
 ```
 * Support for builtin dataclass features, such as `__post_init__` and `@property`
 * Support for nesting and inheritance of dataclasses, nested arguments are automatically created!
@@ -90,11 +91,11 @@ cfg = ArgumentParser(config_class=TrainConfig,config_path='/configs/default_conf
         print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
     ```
 
-=== "pyrallis.ArgumentParser"
+=== "pyrallis.parse"
 
     ``` python
     def main():
-        cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+        cfg = pyrallis.parse(config_class=TrainConfig)
         print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
     ```
 * Easy extension to new types using `pyrallis.encode.register` and `pyrallis.decode.register`

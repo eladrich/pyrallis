@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Type, Any
 
-from pyrallis import ArgumentParser, ParsingError
+import pyrallis
+from pyrallis import ParsingError
 from .testutils import parametrize, TestSetup, raises_missing_required_arg, raises
 
 
@@ -143,10 +144,9 @@ def test_parsing_twice():
     class Foo:
         a: int = 123
 
-    parser = ArgumentParser(config_class=Foo)
-    cfg = parser.parse_args("")
+    cfg = pyrallis.parse(config_class=Foo, args="")
     assert cfg.a == 123
-    cfg = parser.parse_args("--a 456".split())
+    cfg = pyrallis.parse(config_class=Foo, args="--a 456".split())
     assert cfg.a == 456
 
 

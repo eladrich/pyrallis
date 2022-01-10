@@ -40,9 +40,10 @@ def test_dump_load(simple_attribute, tmp_path):
     tmp_file = tmp_path / 'config.yaml'
     pyrallis.dump(b, tmp_file.open('w'))
 
-    new_b = pyrallis.ArgumentParser(config_class=SomeClass, config_path=tmp_file).parse_args("")
+    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
-    new_b = pyrallis.ArgumentParser(config_class=SomeClass).parse_args(shlex.split(f"--CONFIG {tmp_file}"))
+    arguments = shlex.split(f"--CONFIG {tmp_file}")
+    new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 
 

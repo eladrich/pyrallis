@@ -4,7 +4,7 @@ The best way to understand `pyrallis` is through examples, let's get started!
 
 ##  Basic Parsing
 
-Creation of an argparse configuration is really simple, just use `pyrallis.ArgumentParser` on your predefined dataclass.
+Creation of an argparse configuration is really simple, just use `pyrallis.parse` on your predefined dataclass.
 
 ```python title="train_model.py"  linenums="1"
 from dataclasses import dataclass, field
@@ -21,7 +21,7 @@ class TrainConfig:
 
 
 def main():
-    cfg = pyrallis.ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 
 
@@ -56,13 +56,13 @@ TrainConfig ['options']:
 
 
  
-The `pyrallis.ArgumentParser` syntax is too cumbersome?
+Don't like the `pyrallis.parse` syntax?
 ```python
 def main():
-    cfg = pyrallis.ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 ```
-One can equiavlently use the `pyrallis.wrap` syntax 😎 
+One can equivalently use the `pyrallis.wrap` syntax 😎 
 ```python
 @pyrallis.wrap()
 def main(cfg: TrainConfig):
@@ -188,8 +188,9 @@ log:
 
 Configuration files can also be loaded back into a dataclass, and can even be used together with the command-line arguments.
 ```python
-cfg = pyrallis.ArgumentParser(config_class=TrainConfig,
-                              config_path='/share/configs/config.yaml').parse_args()
+cfg = pyrallis.parse(config_class=TrainConfig,
+                              config_path='/share/configs/config.yaml')
+
 # or the decorator synrax
 @pyrallis.wrap(config_path='/share/configs/config.yaml')
 

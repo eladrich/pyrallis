@@ -20,7 +20,7 @@ There are several key features to pyrallis but at its core pyrallis simply allow
 
 ```python 
 from dataclasses import dataclass
-from pyrallis import ArgumentParser
+import pyrallis
 
 
 @dataclass
@@ -30,7 +30,7 @@ class TrainConfig:
     exp_name: str = 'default_exp' # The experiment name
 
 def main():
-    cfg = ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 
 ```
@@ -64,9 +64,9 @@ Building on that design `pyrallis` offers some really enjoyable features includi
 
 The best way to understand the full `pyrallis` API is through examples, let's get started!
 
-###  🐲 1/5 `pyrallis.ArgumentParser` for `dataclass` Parsing 🐲
+###  🐲 1/5 `pyrallis.parse` for `dataclass` Parsing 🐲
 
-Creation of an argparse configuration is really simple, just use `pyrallis.ArgumentParser` on your predefined dataclass.
+Creation of an argparse configuration is really simple, just use `pyrallis.parse` on your predefined dataclass.
 
 ```python
 from dataclasses import dataclass, field
@@ -83,7 +83,7 @@ class TrainConfig:
 
 
 def main():
-    cfg = pyrallis.ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 
 
@@ -118,13 +118,13 @@ TrainConfig ['options']:
 
 
 ### 🐲 2/5 The `pyrallis.wrap` Decorator 🐲
-The `pyrallis.ArgumentParser` syntax is too cumbersome?
+Don't like the `pyrallis.parse` syntax?
 ```python
 def main():
-    cfg = pyrallis.ArgumentParser(config_class=TrainConfig).parse_args()
+    cfg = pyrallis.parse(config_class=TrainConfig)
     print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
 ```
-One can equiavlently use the `pyrallis.wrap` syntax 😎 
+One can equivalently use the `pyrallis.wrap` syntax 😎 
 ```python
 @pyrallis.wrap()
 def main(cfg: TrainConfig):
@@ -250,8 +250,9 @@ log:
 
 Configuration files can also be loaded back into a dataclass, and can even be used together with the command-line arguments.
 ```python
-cfg = pyrallis.ArgumentParser(config_class=TrainConfig,
-                              config_path='/share/configs/config.yaml').parse_args()
+cfg = pyrallis.parse(config_class=TrainConfig,
+                              config_path='/share/configs/config.yaml')
+
 # or the decorator synrax
 @pyrallis.wrap(config_path='/share/configs/config.yaml')
 
@@ -364,3 +365,5 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 - [ ] Think on relative paths
 - [ ] Fix error with default Dict and List
 >         Underlying error: No decoding function for type ~KT, consider using pyrallis.decode.register
+- [ ] Refine the `--help` command
+> For example the `options` argument is confusing there

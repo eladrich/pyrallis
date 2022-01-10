@@ -18,12 +18,7 @@ from typing import (
 
 import pytest
 import pyrallis
-from pyrallis import (
-    ArgumentParser,
-    SimpleHelpFormatter,
-    ParsingError
-)
-from pyrallis.wrappers import DataclassWrapper
+from pyrallis import ParsingError
 
 
 xfail = pytest.mark.xfail
@@ -95,40 +90,11 @@ def assert_help_output_equals(actual: str, expected: str) -> bool:
 T = TypeVar("T")
 
 
-class TestParser(pyrallis.ArgumentParser, Generic[T]):
-    __test__ = False
-    """ A parser subclass just used for testing.
-    Makes the retrieval of the arguments a bit easier to read.
-    """
-
-    def __init__(self, *args, **kwargs):
-        self._current_dest = None
-        self._current_dataclass = None
-        super().__init__(*args, **kwargs)
-
-    def add_arguments(self, dataclass: Type, dest, prefix="", default=None):
-        if self._current_dest == dest and self._current_dataclass == dataclass:
-            return  # already added arguments for that dataclass.
-        self._current_dest = dest
-        self._current_dataclass = dataclass
-        return super().add_arguments(dataclass, dest, prefix=prefix, default=default)
-
-    def __call__(self, args: str) -> T:
-        namespace = self.parse_args(shlex.split(args))
-        value = getattr(namespace, self._current_dest)
-        value = cast(T, value)
-        return value
-
-
 class TestSetup:
     @classmethod
     def setup(
             cls: Type[Dataclass],
             arguments: Optional[str] = "",
-            dest: Optional[str] = None,
-            default: Optional[Dataclass] = None,
-            parse_known_args: bool = False,
-            attempt_to_reorder: bool = False,
     ) -> Dataclass:
         """Basic setup for a tests.
 
@@ -139,22 +105,10 @@ class TestSetup:
         Returns:
             {cls}} -- the class's type.
         """
-        parser = pyrallis.ArgumentParser(config_class=cls)
-
-        if arguments is None:
-            if parse_known_args:
-                args = parser.parse_known_args(attempt_to_reorder=attempt_to_reorder)
-            else:
-                args = parser.parse_args()
-        else:
-            splits = shlex.split(arguments)
-            if parse_known_args:
-                args, unknown_args = parser.parse_known_args(
-                    splits, attempt_to_reorder=attempt_to_reorder
-                )
-            else:
-                args = parser.parse_args(splits)
-        return args
+        if arguments is not None:
+            arguments = shlex.split(arguments)
+        cfg = pyrallis.parse(config_class=cls, args=arguments)
+        return cfg
 
     @classmethod
     def get_help_text(

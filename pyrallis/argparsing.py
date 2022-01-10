@@ -11,6 +11,7 @@ from functools import wraps
 from logging import getLogger
 from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic, Optional
 
+from pathlib import Path
 import yaml
 
 from pyrallis import utils
@@ -161,6 +162,8 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         return cfg
 
+def parse(config_class: Type[T], config_path: Optional[Union[Path, str]] = None, args = None) -> T:
+    return ArgumentParser(config_class=config_class, config_path=config_path).parse_args(args)
 
 def wrap(config_path=None):
     def wrapper_outer(fn):
@@ -168,7 +171,7 @@ def wrap(config_path=None):
         def wrapper_inner(*args, **kwargs):
             argspec = inspect.getfullargspec(fn)
             argtype = argspec.annotations[argspec.args[0]]
-            cfg = ArgumentParser(config_class=argtype, config_path=config_path).parse_args()
+            cfg = parse(config_class=argtype, config_path=config_path)
             response = fn(cfg, *args, **kwargs)
             return response
 

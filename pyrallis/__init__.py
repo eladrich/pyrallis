@@ -1,8 +1,7 @@
-__version__ = "0.1.4.2"
+__version__ = "0.2"
 
 from . import wrappers, utils
-from pyrallis.help_formatter import SimpleHelpFormatter
-from pyrallis.argparsing import ArgumentParser, wrap
+from .argparsing import wrap, parse
 from .parsers.encoding import encode, dump
 from .parsers.decoding import decode, load
 from .fields import field

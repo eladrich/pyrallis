@@ -5,7 +5,7 @@
 
 > Pyrausta (also called pyrallis (πυραλλίς), pyragones) is a mythological insect-sized dragon from Cyprus.
 
-`Pyrallis` is a simple library, derived from `simple-parsing`, for automagically creating project configuration from a dataclass.
+`Pyrallis` is a simple library, derived from `simple-parsing` and inspired by `Hydra`, for automagically creating project configuration from a dataclass.
 
 
 <p align="center"><img src="https://github.com/eladrich/pyrallis/raw/master/docs/argparse2pyrallis.gif" alt="GIF" width="100%" /></p>
@@ -358,11 +358,6 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 
 
 # TODOs:
-- [x] Create documentation page
-> Create a full documentation with mkdocs
-- [x] Improve warnings and logs
-> Find a better way to show what failed
-- [ ] Think on relative paths
 - [ ] Fix error with default Dict and List
 >         Underlying error: No decoding function for type ~KT, consider using pyrallis.decode.register
 - [ ] Refine the `--help` command

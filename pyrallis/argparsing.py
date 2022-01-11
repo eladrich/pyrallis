@@ -2,6 +2,7 @@
 @author: Fabrice Normandin
 """
 import argparse
+import dataclasses
 import inspect
 import sys
 import warnings
@@ -9,19 +10,18 @@ from argparse import HelpFormatter, Namespace
 from collections import defaultdict
 from functools import wraps
 from logging import getLogger
+from pathlib import Path
 from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic, Optional
 
-from pathlib import Path
 import yaml
 
 from pyrallis import utils
-from pyrallis.parsers import decoding
 from pyrallis.help_formatter import SimpleHelpFormatter
-from pyrallis.utils import Dataclass
+from pyrallis.parsers import decoding
+from pyrallis.utils import Dataclass, PyrallisException
 from pyrallis.wrappers import DataclassWrapper
 
 logger = getLogger(__name__)
-
 
 T = TypeVar('T')
 
@@ -48,7 +48,9 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         self._preprocessing_done: bool = False
         self.config_path = config_path
         self.config_class = config_class
-        self.add_argument('--CONFIG', type=str, help='Path for a config file to parsers with pyrallis')
+
+        self._assert_no_conflicts()
+        self.add_argument(f'--{utils.CONFIG_ARG}', type=str, help='Path for a config file to parse with pyrallis')
         self.add_arguments(config_class, dest=utils.BASE_KEY)
 
     def add_arguments(
@@ -75,6 +77,11 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         new_wrapper = dataclass_wrapper_class(dataclass, dest, prefix=prefix, default=default)
         self._wrappers.append(new_wrapper)
 
+    def _assert_no_conflicts(self):
+        """ Checks for a field name that conflicts with utils.CONFIG_ARG"""
+        if utils.CONFIG_ARG in [field.name for field in dataclasses.fields(self.config_class)]:
+            raise PyrallisException(f'{utils.CONFIG_ARG} is a reserved word for pyrallis')
+
     def parse_args(self, args=None, namespace=None) -> T:
         return super().parse_args(args, namespace)
 
@@ -93,12 +100,13 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         else:
             # make sure that args are mutable
             args = list(args)
+
         self._preprocessing()
 
         if '--help' not in args:
             for action in self._actions:
                 action.default = argparse.SUPPRESS  # To avoid setting of defaults in actual run
-                action.type = str  # In practice we want all processing to happen with yaml
+                action.type = str  # In practice, we want all processing to happen with yaml
         parsed_args, unparsed_args = super().parse_known_args(args, namespace)
 
         parsed_args = self._postprocessing(parsed_args)
@@ -142,14 +150,14 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         config_path = self.config_path  # Could be NONE
 
-        if 'CONFIG' in parsed_arg_values:
-            new_config_path = parsed_arg_values['CONFIG']
+        if utils.CONFIG_ARG in parsed_arg_values:
+            new_config_path = parsed_arg_values[utils.CONFIG_ARG]
             if config_path is not None:
                 warnings.warn(
                     UserWarning(f'Overriding default {config_path} with {new_config_path}')
                 )
             config_path = new_config_path
-            del parsed_arg_values['CONFIG']
+            del parsed_arg_values[utils.CONFIG_ARG]
 
         if config_path is not None:
             yaml_args = yaml.full_load(open(config_path, 'r'))
@@ -162,8 +170,12 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         return cfg
 
-def parse(config_class: Type[T], config_path: Optional[Union[Path, str]] = None, args = None) -> T:
-    return ArgumentParser(config_class=config_class, config_path=config_path).parse_args(args)
+
+def parse(config_class: Type[T], config_path: Optional[Union[Path, str]] = None,
+          args: Optional[Sequence[str]] = None) -> T:
+    parser = ArgumentParser(config_class=config_class, config_path=config_path)
+    return parser.parse_args(args)
+
 
 def wrap(config_path=None):
     def wrapper_outer(fn):

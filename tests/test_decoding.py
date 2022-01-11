@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
+from pyrallis.utils import PyrallisException
+
 import pyrallis
 from .testutils import *
 
@@ -42,10 +44,18 @@ def test_dump_load(simple_attribute, tmp_path):
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
-    arguments = shlex.split(f"--CONFIG {tmp_file}")
+    arguments = shlex.split(f"--config_path {tmp_file}")
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 
+
+def test_reserved_config_word():
+    @dataclass
+    class MainClass:
+        config_path: str = ""
+
+    with raises(PyrallisException):
+        pyrallis.parse(MainClass)
 
 def test_super_nesting():
     @dataclass

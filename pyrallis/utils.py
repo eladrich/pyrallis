@@ -551,6 +551,7 @@ def deflatten(d, parent_key='', sep='.'):
 
 
 BASE_KEY = 'options'
+CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":
     import doctest

@@ -5,13 +5,15 @@ Pyrallis is designed to have a relatively small API, you can get familiar with i
 ## Parsing Interface
 ### pyrallis.parse
 ```python
-def parse(config_class: Type[T], config_path: Optional[str] = None, args = None) -> T:
+def parse(config_class: Type[T], 
+          config_path: Optional[Union[Path, str]] = None,
+          args: Optional[Sequence[str]] = None) -> T:
 ```
 Parses the available arguments and return an initialized dataclass of type `config_class`.
 
 Each dataclass attribute is mapped to a matching argparse argument, where nested arguments are concatenated with the dot notation. That is, if `config_class` contains a `config_class.compute.workers` attribute, the matching argparse argument will simply be `--compute.workers=42`. The full set of arguments is visible using the `--help` command.
 
-Pyrallis also searches for an optional `yaml` configuration file defined either with the default `config_path` parameter, or specified from command-line using the dedicated `--CONFIG` argument. The configuration file is mapped according to the `yaml` hierarchy.
+Pyrallis also searches for an optional `yaml` configuration file defined either with the default `config_path` parameter, or specified from command-line using the dedicated `--config_path` argument. The configuration file is mapped according to the `yaml` hierarchy.
 That is, if `config_class` contains a `config_class.compute.workers` attribute, the matching `yaml` argument would be
 ```yaml
 compute:
@@ -51,17 +53,17 @@ def main():
 The arguments can then be specified using command-line arguments, a `yaml` configuration file, or both
 
 ```console
-$ python train_model.py --CONFIG=some_config.yaml --exp_name=my_first_exp
+$ python train_model.py --config_path=some_config.yaml --exp_name=my_first_exp
 Training my_first_exp with 42 workers...
 ```
 Not sure what arguments are available? pyrallis also automagically generates the `--help` command 🪄
 ```console
 $ python train_model.py --help
-usage: train_model.py [-h] [--CONFIG str] [--workers int] [--exp_name str]
+usage: train_model.py [-h] [--config_path str] [--workers int] [--exp_name str]
 
 optional arguments:
   -h, --help      show this help message and exit
-  --CONFIG str    Path for a config file to parse with pyrallis (default:
+  --config_path str    Path for a config file to parse with pyrallis (default:
                   None)
 
 TrainConfig ['options']:
@@ -143,7 +145,6 @@ The `pyrallis.decode` function is also used to parse dataclasses from dictionair
 The dictionary is assumed to have a structure that matches the dataclass, with possibly missing values. 
 For example, assuming the following dataclass
 ```python
-
 @dataclass
 class ComputeConfig:
     """ Config for training resources """

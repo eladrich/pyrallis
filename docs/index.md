@@ -62,7 +62,7 @@ There are several key features to pyrallis but at its core pyrallis simply allow
 The arguments can then be specified using command-line arguments, a `yaml` configuration file, or both
 
 ```console
-$ python train_model.py --CONFIG=some_config.yaml --exp_name=my_first_exp
+$ python train_model.py --config_path=some_config.yaml --exp_name=my_first_exp
 Training my_first_exp with 42 workers...
 ```
 Assuming the following configuration file

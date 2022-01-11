@@ -38,7 +38,7 @@ def main():
 The arguments can then be specified using command-line arguments, a `yaml` configuration file, or both.
 
 ```console
-$ python train_model.py --CONFIG=some_config.yaml --exp_name=my_first_exp
+$ python train_model.py --config_path=some_config.yaml --exp_name=my_first_exp
 Training my_first_exp with 42 workers...
 ```
 Assuming the following configuration file
@@ -101,11 +101,11 @@ Oh, and `pyrallis` also generates an `--help` string automatically using the com
 
 ```console
 $ python train_model.py --help
-usage: train_model.py [-h] [--CONFIG str] [--workers int] [--exp_name str]
+usage: train_model.py [-h] [--config_path str] [--workers int] [--exp_name str]
 
 optional arguments:
   -h, --help      show this help message and exit
-  --CONFIG str    Path for a config file to parse with pyrallis (default:
+  --config_path str    Path for a config file to parse with pyrallis (default:
                   None)
 
 TrainConfig ['options']:
@@ -257,7 +257,7 @@ cfg = pyrallis.parse(config_class=TrainConfig,
 @pyrallis.wrap(config_path='/share/configs/config.yaml')
 
 # or with the CONFIG argument
-python my_script.py --log.exp_name=readme_exp --CONFIG=/share/configs/config.yaml
+python my_script.py --log.exp_name=readme_exp --config_path=/share/configs/config.yaml
 
 # Or if you just want to load from a .yaml without cmd parsing
 cfg = pyrallis.load(TrainConfig, '/share/configs/config.yaml')

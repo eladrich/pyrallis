@@ -573,12 +573,12 @@ def deflatten(d: Dict[str, Any], parent_key: str = '.', sep: str = '.'):
 
 
 def remove_matching(dict_a, dict_b):
-    dict_a = flatten(dict_a)
-    dict_b = flatten(dict_b)
+    dict_a = flatten(dict_a, parent_key=BASE_KEY)
+    dict_b = flatten(dict_b, parent_key=BASE_KEY)
     for key in dict_b:
         if key in dict_a and dict_b[key] == dict_a[key]:
             del dict_a[key]
-    return deflatten(dict_a)
+    return deflatten(dict_a, parent_key=BASE_KEY)
 
 
 BASE_KEY = 'options'

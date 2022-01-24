@@ -91,13 +91,14 @@ class DataclassWrapper(Wrapper[Dataclass]):
         from pyrallis.argparsing import ArgumentParser
 
         parser = cast(ArgumentParser, parser)
+        option_fields = [field for field in self.fields if field.arg_options]
 
-        group = parser.add_argument_group(
-            title=self.title, description=self.description
-        )
-
-        for wrapped_field in self.fields:
-            if wrapped_field.arg_options:
+        if len(option_fields) > 0:
+            # Only show groups with parameters
+            group = parser.add_argument_group(
+                title=self.title, description=self.description
+            )
+            for wrapped_field in option_fields:
                 logger.debug(
                     f"Arg options for field '{wrapped_field.name}': {wrapped_field.arg_options}"
                 )
@@ -167,7 +168,10 @@ class DataclassWrapper(Wrapper[Dataclass]):
                     return doc.comment_above
                 elif doc.comment_inline:
                     return doc.comment_inline
-        return self.dataclass.__doc__ or ""
+        class_doc = self.dataclass.__doc__ or ""
+        if class_doc.startswith(f'{self.dataclass.__name__}('):
+            return ""  # The base dataclass doc looks confusing, remove it
+        return class_doc
 
     @property
     def required(self) -> bool:
@@ -186,20 +190,3 @@ class DataclassWrapper(Wrapper[Dataclass]):
         for child in self._children:
             yield child
             yield from child.descendants
-
-    @property
-    def dest(self):
-        lineage = []
-        if self.parent is None:
-            return self.name
-        parent = self.parent
-        while parent is not None:
-            lineage.append(parent.name)
-            parent = parent.parent
-        lineage = list(reversed(lineage))
-        lineage.append(self.name)
-        if lineage[0] is None:  # Skip root if it doesn't have a name
-            lineage = lineage[1:]
-        _dest = ".".join(lineage)
-        logger.debug(f"getting dest, returning {_dest}")
-        return _dest

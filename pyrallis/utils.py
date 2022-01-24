@@ -1,11 +1,12 @@
 """Utility functions used in various parts of the pyrallis package."""
 import argparse
 import builtins
+import collections.abc as c_abc
 import dataclasses
 import enum
 import inspect
+import logging
 from collections import OrderedDict
-import collections.abc as c_abc
 from dataclasses import _MISSING_TYPE
 from enum import Enum
 from logging import getLogger
@@ -68,8 +69,10 @@ FALSE_STRINGS: List[str] = ["no", "false", "f", "n", "0"]
 class PyrallisException(Exception):
     pass
 
+
 class ParsingError(PyrallisException):
     pass
+
 
 def str2bool(raw_value: Union[str, bool]) -> bool:
     """
@@ -501,6 +504,25 @@ def default_value(field: dataclasses.Field) -> Union[T, _MISSING_TYPE]:
         return dataclasses.MISSING
 
 
+def get_defaults_dict(c: Dataclass):
+    """" Get defaults of a dataclass without generating the object """
+    defaults_dict = {}
+    for field in dataclasses.fields(c):
+        if is_dataclass_type(field.type):
+            defaults_dict[field.name] = get_defaults_dict(field.type)
+        else:
+            if field.default is not dataclasses.MISSING:
+                defaults_dict[field.name] = field.default
+            elif field.default_factory is not dataclasses.MISSING:
+                try:
+                    defaults_dict[field.name] = field.default_factory()
+                except Exception as e:
+                    logging.debug(
+                        f"Failed getting default for field {field.name} using its default factory.\n\tUnderlying error: {e}")
+                    continue
+    return defaults_dict
+
+
 def keep_keys(d: Dict, keys_to_keep: Iterable[str]) -> Tuple[Dict, Dict]:
     """Removes all the keys in `d` that aren't in `keys`.
 
@@ -526,21 +548,21 @@ def keep_keys(d: Dict, keys_to_keep: Iterable[str]) -> Tuple[Dict, Dict]:
     return d, removed
 
 
-def flatten(d, parent_key='', sep='.'):
+def flatten(d, parent_key=None, sep='.'):
     items = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k
         if isinstance(v, c_abc.MutableMapping):
-            items.extend(flatten(v, new_key, sep=sep).items())
+            items.extend(flatten(v, parent_key=new_key, sep=sep).items())
         else:
             items.append((new_key, v))
     return dict(items)
 
 
-def deflatten(d, parent_key='', sep='.'):
+def deflatten(d: Dict[str, Any], sep: str = '.'):
     deflat_d = {}
     for key in d:
-        key_parts = key[len(parent_key) + 1:].split(sep)
+        key_parts = key.split(sep)
         curr_d = deflat_d
         for inner_key in key_parts[:-1]:
             if not inner_key in curr_d:
@@ -550,7 +572,15 @@ def deflatten(d, parent_key='', sep='.'):
     return deflat_d
 
 
-BASE_KEY = 'options'
+def remove_matching(dict_a, dict_b):
+    dict_a = flatten(dict_a)
+    dict_b = flatten(dict_b)
+    for key in dict_b:
+        if key in dict_a and dict_b[key] == dict_a[key]:
+            del dict_a[key]
+    return deflatten(dict_a)
+
+
 CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":

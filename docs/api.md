@@ -382,7 +382,7 @@ The `pathlib.Path` type is useful for path manipulation, and hence a useful type
 
 ### pyrallis.dump
 ```python
-def dump(config: Dataclass, stream=None, *args, **kwargs)
+def dump(config: Dataclass, stream=None, omit_defaults: bool = False, **kwargs)
 ```
 Serialize a configuration dataclass into a YAML stream. If stream is None, return the produced string instead. Additional arguments are passed along to `yaml.dump`.
 In practice this function uses pyrallis.encode to create a standard dictionary from the dataclass which is then passed along to `yaml`.
@@ -390,6 +390,7 @@ In practice this function uses pyrallis.encode to create a standard dictionary f
 > Parameters
 
 * **config (dataclass)** - The dataclass to serialize
+* **omit_defaults** - If true, does not dump values that are equal to the default Dataclass values.
 * **stream** - An output stream to dump into. If None, the produced string is returned.
 
 

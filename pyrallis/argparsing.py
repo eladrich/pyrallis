@@ -45,37 +45,35 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         self._wrappers: List[DataclassWrapper] = []
 
-        self._preprocessing_done: bool = False
         self.config_path = config_path
         self.config_class = config_class
 
         self._assert_no_conflicts()
         self.add_argument(f'--{utils.CONFIG_ARG}', type=str, help='Path for a config file to parse with pyrallis')
-        self.add_arguments(config_class, dest=utils.BASE_KEY)
+        self.set_dataclass(config_class)
 
-    def add_arguments(
+    def set_dataclass(
             self,
             dataclass: Union[Type[Dataclass], Dataclass],
-            dest: str,
             prefix: str = "",
             default: Union[Dataclass, Dict] = None,
             dataclass_wrapper_class: Type[DataclassWrapper] = DataclassWrapper,
     ):
         """ Adds command-line arguments for the fields of `dataclass`. """
-        for wrapper in self._wrappers:
-            if wrapper.dest == dest:
-                raise argparse.ArgumentError(
-                    argument=None,
-                    message=f"Destination attribute {dest} is already used for "
-                            f"dataclass of type {dataclass}. Make sure all destinations"
-                            f" are unique.",
-                )
         if not isinstance(dataclass, type):
             default = dataclass if default is None else default
             dataclass = type(dataclass)
 
-        new_wrapper = dataclass_wrapper_class(dataclass, dest, prefix=prefix, default=default)
+        new_wrapper = dataclass_wrapper_class(dataclass, prefix=prefix, default=default)
         self._wrappers.append(new_wrapper)
+        self._wrappers += new_wrapper.descendants
+
+        for wrapper in self._wrappers:
+            logger.debug(
+                f"Adding arguments for dataclass: {wrapper.dataclass} "
+                f"at destination {wrapper.dest}"
+            )
+            wrapper.add_arguments(parser=self)
 
     def _assert_no_conflicts(self):
         """ Checks for a field name that conflicts with utils.CONFIG_ARG"""
@@ -101,10 +99,9 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
             # make sure that args are mutable
             args = list(args)
 
-        self._preprocessing()
-
         if '--help' not in args:
             for action in self._actions:
+                # TODO: Find a better way to do that?
                 action.default = argparse.SUPPRESS  # To avoid setting of defaults in actual run
                 action.type = str  # In practice, we want all processing to happen with yaml
         parsed_args, unparsed_args = super().parse_known_args(args, namespace)
@@ -113,31 +110,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         return parsed_args, unparsed_args
 
     def print_help(self, file=None):
-        self._preprocessing()
         return super().print_help(file)
-
-    def _add_descendants(self) -> None:
-        descendant_wrappers = []
-        for wrapper in self._wrappers:
-            descendant_wrappers.extend(wrapper.descendants)
-        self._wrappers += descendant_wrappers
-
-    def _preprocessing(self) -> None:
-        """ Add all the arguments."""
-        logger.debug("\nPREPROCESSING\n")
-        if self._preprocessing_done:
-            return
-
-        self._add_descendants()
-
-        # Create one argument group per dataclass
-        for wrapper in self._wrappers:
-            logger.debug(
-                f"Adding arguments for dataclass: {wrapper.dataclass} "
-                f"at destinations {wrapper.destinations}"
-            )
-            wrapper.add_arguments(parser=self)
-        self._preprocessing_done = True
 
     def _postprocessing(self, parsed_args: Namespace) -> T:
         logger.debug("\nPOST PROCESSING\n")
@@ -161,11 +134,11 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         if config_path is not None:
             yaml_args = yaml.full_load(open(config_path, 'r'))
-            yaml_args = utils.flatten(yaml_args, parent_key=utils.BASE_KEY, sep='.')
+            yaml_args = utils.flatten(yaml_args, sep='.')
             yaml_args.update(parsed_arg_values)
             parsed_arg_values = yaml_args
 
-        deflat_d = utils.deflatten(parsed_arg_values, parent_key=utils.BASE_KEY, sep='.')
+        deflat_d = utils.deflatten(parsed_arg_values, sep='.')
         cfg = decoding.decode(self.config_class, deflat_d)
 
         return cfg

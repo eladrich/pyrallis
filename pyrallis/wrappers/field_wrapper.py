@@ -43,7 +43,6 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         self._dest: Optional[str] = None
         # the argparse-related options:
         self._arg_options: Dict[str, Any] = {}
-        self._dest_field: Optional["FieldWrapper"] = None
         self._type: Optional[Type[Any]] = None
 
         # stores the resulting values for each of the destination attributes.
@@ -114,9 +113,6 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
 
         return _arg_options
 
-    @property
-    def is_reused(self) -> bool:
-        return len(self.destinations) > 1
 
     @property
     def action(self) -> Union[str, Type[argparse.Action]]:
@@ -139,11 +135,6 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         """
         return self.field.metadata.get("custom_args", {})
 
-    @property
-    def destinations(self) -> List[str]:
-        return [
-            f"{parent_dest}.{self.name}" for parent_dest in self.parent.destinations
-        ]
 
     @property
     def option_strings(self) -> List[str]:
@@ -170,7 +161,7 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
 
         # Currently create only a single option name, no support for aliases
         dashes.append('--')
-        options.append(self.dest[len(utils.BASE_KEY) + 1:])
+        options.append(self.dest)
 
         # remove duplicates by creating a set.
         option_strings = set(f"{dash}{option}" for dash, option in zip(dashes, options))
@@ -180,35 +171,7 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
     def dest(self) -> str:
         """Where the attribute will be stored in the Namespace."""
         self._dest = super().dest
-        # TODO: If a custom `dest` was passed, and it is a `Field` instance,
-        # find the corresponding FieldWrapper and use its `dest` instead of ours.
-        if self.dest_field:
-            self._dest = self.dest_field.dest
-            self.custom_arg_options.pop("dest", None)
         return self._dest
-
-    @property
-    def dest_field(self) -> Optional["FieldWrapper"]:
-        """Return the `FieldWrapper` for which `self` is a proxy (same dest).
-        When a `dest` argument is passed to `field()`, and its value is a
-        `Field`, that indicates that this Field is just a proxy for another.
-
-        In such a case, we replace the dest of `self` with that of the other
-        wrapper's we then find the corresponding FieldWrapper and use its `dest`
-        instead of ours.
-        """
-        if self._dest_field is not None:
-            return self._dest_field
-        custom_dest = self.custom_arg_options.get("dest")
-        if isinstance(custom_dest, dataclasses.Field):
-            all_fields: List[FieldWrapper] = []
-            for parent in self.lineage():
-                all_fields.extend(parent.fields)  # type: ignore
-            for other_wrapper in all_fields:
-                if custom_dest is other_wrapper.field:
-                    self._dest_field = other_wrapper
-                    break
-        return self._dest_field
 
     @property
     def nargs(self):
@@ -232,37 +195,6 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
 
         if default is dataclasses.MISSING:
             default = None
-
-        if self.action == "store_true" and default is None:
-            default = False
-        if self.action == "store_false" and default is None:
-            default = True
-
-        if self.parent.defaults:
-            # if the dataclass holding this field has a default value (either
-            # when passed  manually or by nesting), use the corresponding
-            # attribute on that default instance.
-
-            defaults = []
-            for default_dataclass_instance in self.parent.defaults:
-                if default_dataclass_instance is None:
-                    default_value = default
-                elif isinstance(default_dataclass_instance, dict):
-                    default_value = default_dataclass_instance.get(self.name, default)
-                else:
-                    default_value = getattr(default_dataclass_instance, self.name)
-                defaults.append(default_value)
-            default = defaults[0] if len(defaults) == 1 else defaults
-
-        if self.is_reused and default is not None:
-            n_destinations = len(self.destinations)
-            assert n_destinations >= 1
-            if not isinstance(default, list) or len(default) != n_destinations:
-                default = [default] * n_destinations
-            assert len(default) == n_destinations, (
-                f"Not the same number of default values and destinations. "
-                f"(default: {default}, # of destinations: {n_destinations})"
-            )
 
         self._default = default
         return self._default
@@ -293,10 +225,6 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
 
         elif self.default is None:
             self._required = True
-        elif self.is_reused:
-            # if we're reusing this argument, the default value might be a list
-            # of `MISSING` values.
-            self._required = any(v == dataclasses.MISSING for v in self.default)
         else:
             self._required = False
         return self._required

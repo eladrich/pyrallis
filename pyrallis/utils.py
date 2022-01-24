@@ -548,21 +548,21 @@ def keep_keys(d: Dict, keys_to_keep: Iterable[str]) -> Tuple[Dict, Dict]:
     return d, removed
 
 
-def flatten(d, parent_key='', sep='.'):
+def flatten(d, parent_key=None, sep='.'):
     items = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k
         if isinstance(v, c_abc.MutableMapping):
-            items.extend(flatten(v, new_key, sep=sep).items())
+            items.extend(flatten(v, parent_key=new_key, sep=sep).items())
         else:
             items.append((new_key, v))
     return dict(items)
 
 
-def deflatten(d: Dict[str, Any], parent_key: str = '.', sep: str = '.'):
+def deflatten(d: Dict[str, Any], sep: str = '.'):
     deflat_d = {}
     for key in d:
-        key_parts = key[len(parent_key) + 1:].split(sep)
+        key_parts = key.split(sep)
         curr_d = deflat_d
         for inner_key in key_parts[:-1]:
             if not inner_key in curr_d:
@@ -573,15 +573,14 @@ def deflatten(d: Dict[str, Any], parent_key: str = '.', sep: str = '.'):
 
 
 def remove_matching(dict_a, dict_b):
-    dict_a = flatten(dict_a, parent_key=BASE_KEY)
-    dict_b = flatten(dict_b, parent_key=BASE_KEY)
+    dict_a = flatten(dict_a)
+    dict_b = flatten(dict_b)
     for key in dict_b:
         if key in dict_a and dict_b[key] == dict_a[key]:
             del dict_a[key]
-    return deflatten(dict_a, parent_key=BASE_KEY)
+    return deflatten(dict_a)
 
 
-BASE_KEY = 'options'
 CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":

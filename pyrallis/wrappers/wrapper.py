@@ -15,6 +15,8 @@ class Wrapper(Generic[T], ABC):
     def dest(self) -> str:
         """Where the attribute will be stored in the Namespace."""
         lineage_names: List[str] = [w.name for w in self.lineage()]
+        if lineage_names[-1] is None:  # Skip root if None
+            lineage_names = lineage_names[:-1]
         self._dest = ".".join(reversed([self.name] + lineage_names))
         assert self._dest is not None
         return self._dest

@@ -4,11 +4,11 @@ from dataclasses import _MISSING_TYPE
 from logging import getLogger
 from typing import Dict, List, Optional, Type, Union, cast
 
+from pyrallis.utils import Dataclass
+from . import docstring
 from .field_wrapper import FieldWrapper
 from .wrapper import Wrapper
 from .. import utils
-from . import docstring
-from pyrallis.utils import Dataclass
 
 logger = getLogger(__name__)
 
@@ -17,7 +17,7 @@ class DataclassWrapper(Wrapper[Dataclass]):
     def __init__(
             self,
             dataclass: Type[Dataclass],
-            name: str,
+            name: Optional[str] = None,
             default: Union[Dataclass, Dict] = None,
             prefix: str = "",
             parent: "DataclassWrapper" = None,
@@ -31,7 +31,6 @@ class DataclassWrapper(Wrapper[Dataclass]):
         self.prefix = prefix
 
         self.fields: List[FieldWrapper] = []
-        self._destinations: List[str] = []
         self._required: bool = False
         self._explicit: bool = False
         self._dest: str = ""
@@ -150,8 +149,9 @@ class DataclassWrapper(Wrapper[Dataclass]):
 
     @property
     def title(self) -> str:
-        names_string = f""" [{', '.join(f"'{dest}'" for dest in self.destinations)}]"""
-        title = self.dataclass.__qualname__ + names_string
+        title = self.dataclass.__qualname__
+        if self.dest is not None:  # Show name if exists
+            title += f" ['{self.dest}']"
         return title
 
     @property
@@ -182,10 +182,6 @@ class DataclassWrapper(Wrapper[Dataclass]):
             child_wrapper.required = value
 
     @property
-    def multiple(self) -> bool:
-        return len(self.destinations) > 1
-
-    @property
     def descendants(self):
         for child in self._children:
             yield child
@@ -194,27 +190,16 @@ class DataclassWrapper(Wrapper[Dataclass]):
     @property
     def dest(self):
         lineage = []
+        if self.parent is None:
+            return self.name
         parent = self.parent
         while parent is not None:
             lineage.append(parent.name)
             parent = parent.parent
         lineage = list(reversed(lineage))
         lineage.append(self.name)
+        if lineage[0] is None:  # Skip root if it doesn't have a name
+            lineage = lineage[1:]
         _dest = ".".join(lineage)
         logger.debug(f"getting dest, returning {_dest}")
         return _dest
-
-    @property
-    def destinations(self) -> List[str]:
-        if not self._destinations:
-            if self.parent:
-                self._destinations = [
-                    f"{d}.{self.name}" for d in self.parent.destinations
-                ]
-            else:
-                self._destinations = [self.name]
-        return self._destinations
-
-    @destinations.setter
-    def destinations(self, value: List[str]):
-        self._destinations = value

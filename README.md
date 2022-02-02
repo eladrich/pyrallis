@@ -1,14 +1,12 @@
 <p align="center"><img src="https://raw.githubusercontent.com/eladrich/pyrallis/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 <p align="center">
     <a href="https://badge.fury.io/py/pyrallis"><img src="https://badge.fury.io/py/pyrallis.svg" alt="PyPI version" height="18"></a>
     <a href="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml"><img src="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml/badge.svg" alt="PyTest" height="18"></a>
     <a href="https://pepy.tech/project/pyrallis"><img src="https://pepy.tech/badge/pyrallis" alt="Downloads" height="18"></a>
-    <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-2-orange.svg" alt="All Contributors" height="18"></a>
+    <a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-2-orange.svg" alt="All Contributors" height="18"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" height="18"></a>
 </p>
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
 # Pyrallis - Simple Configuration with Dataclasses
@@ -382,7 +380,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://about.me/ido.weiss"><img src="https://avatars.githubusercontent.com/u/10072365?v=4?s=100" width="100px;" alt=""/><br /><sub><b>idow09</b></sub></a><br /><a href="#design-idow09" title="Design">🎨</a> <a href="#ideas-idow09" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://about.me/ido.weiss"><img src="https://avatars.githubusercontent.com/u/10072365?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ido Weiss</b></sub></a><br /><a href="#design-idow09" title="Design">🎨</a> <a href="#ideas-idow09" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/yairf11"><img src="https://avatars.githubusercontent.com/u/13931256?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yair Feldman</b></sub></a><br /><a href="#design-yairf11" title="Design">🎨</a> <a href="#ideas-yairf11" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>

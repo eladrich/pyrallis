@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/eladrich/pyrallis/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
@@ -376,6 +376,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://about.me/ido.weiss"><img src="https://avatars.githubusercontent.com/u/10072365?v=4?s=100" width="100px;" alt=""/><br /><sub><b>idow09</b></sub></a><br /><a href="#design-idow09" title="Design">🎨</a> <a href="#ideas-idow09" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/yairf11"><img src="https://avatars.githubusercontent.com/u/13931256?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yair Feldman</b></sub></a><br /><a href="#design-yairf11" title="Design">🎨</a> <a href="#ideas-yairf11" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

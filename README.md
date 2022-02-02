@@ -1,6 +1,13 @@
 <p align="center"><img src="https://raw.githubusercontent.com/eladrich/pyrallis/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+<p align="center">
+    <a href="https://badge.fury.io/py/pyrallis"><img src="https://badge.fury.io/py/pyrallis.svg" alt="PyPI version" height="18"></a>
+    <a href="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml"><img src="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml/badge.svg" alt="PyTest" height="18"></a>
+    <a href="https://pepy.tech/project/pyrallis"><img src="https://pepy.tech/badge/pyrallis" alt="Downloads" height="18"></a>
+    <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-2-orange.svg" alt="All Contributors" height="18"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" height="18"></a>
+</p>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 

@@ -13,8 +13,6 @@ from logging import getLogger
 from pathlib import Path
 from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic, Optional
 
-import yaml
-
 from pyrallis import utils
 from pyrallis.help_formatter import SimpleHelpFormatter
 from pyrallis.parsers import decoding
@@ -119,7 +117,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
         parsed_arg_values = vars(parsed_args)
 
         for key in parsed_arg_values:
-            parsed_arg_values[key] = yaml.safe_load(parsed_arg_values[key])
+            parsed_arg_values[key] = utils.parse_string(parsed_arg_values[key])
 
         config_path = self.config_path  # Could be NONE
 
@@ -133,10 +131,10 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
             del parsed_arg_values[utils.CONFIG_ARG]
 
         if config_path is not None:
-            yaml_args = yaml.full_load(open(config_path, 'r'))
-            yaml_args = utils.flatten(yaml_args, sep='.')
-            yaml_args.update(parsed_arg_values)
-            parsed_arg_values = yaml_args
+            file_args = utils.load_config(open(config_path, 'r'))
+            file_args = utils.flatten(file_args, sep='.')
+            file_args.update(parsed_arg_values)
+            parsed_arg_values = file_args
 
         deflat_d = utils.deflatten(parsed_arg_values, sep='.')
         cfg = decoding.decode(self.config_class, deflat_d)

@@ -128,4 +128,4 @@ def dump(config: Dataclass, stream=None, omit_defaults: bool = False, **kwargs):
     if omit_defaults:
         defaults_dict = encode(utils.get_defaults_dict(config))
         config_dict = utils.remove_matching(config_dict, defaults_dict)
-    return yaml.dump(config_dict, stream, **kwargs)
+    return utils.save_config(config_dict, stream, **kwargs)

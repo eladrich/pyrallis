@@ -1,10 +1,6 @@
 from dataclasses import dataclass, field
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
 
 from pyrallis.utils import PyrallisException
-
-import pyrallis
 from .testutils import *
 
 
@@ -25,7 +21,37 @@ def test_encode_something(simple_attribute):
     assert pyrallis.decode(SomeClass, pyrallis.encode(b)) == b
 
 
-def test_dump_load(simple_attribute, tmp_path):
+@parametrize('config_type', ['', 'yaml', 'json', 'toml'])
+def test_dump_load(simple_attribute, config_type, tmp_path):
+    some_type, passed_value, expected_value = simple_attribute
+
+    if config_type != '':
+        pyrallis.set_config_type(config_type)
+
+    @dataclass
+    class SomeClass:
+        val: Optional[some_type] = None
+
+    b = SomeClass()
+    b.val = expected_value
+
+    tmp_file = tmp_path / f'config'
+    pyrallis.dump(b, tmp_file.open('w'))
+
+    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
+    assert new_b == b
+
+    arguments = shlex.split(f"--config_path {tmp_file}")
+    new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
+    assert new_b == b
+
+    new_b = pyrallis.parse(config_class=SomeClass, args="")
+    assert new_b != b
+
+    pyrallis.set_config_type('yaml')
+
+
+def test_dump_load_dicts(simple_attribute, tmp_path):
     some_type, passed_value, expected_value = simple_attribute
 
     @dataclass
@@ -39,7 +65,7 @@ def test_dump_load(simple_attribute, tmp_path):
     b.l.append((expected_value, expected_value))
     b.t.update({"hey": None, "hey2": expected_value})
 
-    tmp_file = tmp_path / 'config.yaml'
+    tmp_file = tmp_path / f'config'
     pyrallis.dump(b, tmp_file.open('w'))
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
@@ -56,6 +82,7 @@ def test_reserved_config_word():
 
     with raises(PyrallisException):
         pyrallis.parse(MainClass)
+
 
 def test_super_nesting():
     @dataclass

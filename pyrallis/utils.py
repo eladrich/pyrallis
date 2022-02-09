@@ -581,6 +581,13 @@ def remove_matching(dict_a, dict_b):
     return deflatten(dict_a)
 
 
+def format_error(e: Exception):
+    try:
+        return f'{type(e).__name__}: {e}'
+    except Exception:
+        return f'Exception: {e}'
+
+
 CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":

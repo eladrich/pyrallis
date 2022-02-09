@@ -17,7 +17,8 @@ from pyrallis.utils import (
     is_tuple,
     is_union,
     is_enum,
-    ParsingError
+    ParsingError,
+    format_error
 )
 
 logger = getLogger(__name__)
@@ -67,7 +68,7 @@ def decode_dataclass(
             raise e
         except Exception as e:
             raise ParsingError(
-                f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error: {e}")
+                f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error is \"{format_error(e)}\"")
 
         if field.init:
             init_args[name] = field_value

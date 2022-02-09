@@ -163,7 +163,7 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
         return decode_union(*args)
 
     elif is_enum(t):
-        return t
+        return lambda key: t[key]
 
     import typing_inspect as tpi
 

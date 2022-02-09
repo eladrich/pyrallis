@@ -1,15 +1,15 @@
 from builtins import TypeError
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, auto
 
 from tests.testutils import *
 
 
 class Color(Enum):
-    blue: str = "blue"
-    red: str = "red"
-    green: str = "green"
-    orange: str = "orange"
+    blue: str = auto()
+    red: str = auto()
+    green: str = auto()
+    orange: str = auto()
 
 
 def test_passing_enum_to_choice():

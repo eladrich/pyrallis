@@ -1,15 +1,17 @@
 from dataclasses import dataclass, field
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from enum import Enum, auto
 
 from pyrallis.utils import PyrallisException
-
-import pyrallis
 from .testutils import *
 
 
+class Color(Enum):
+    blue: str = auto()
+    red: str = auto()
+
+
 def test_encode_something(simple_attribute):
-    some_type, passed_value, expected_value = simple_attribute
+    some_type, _, expected_value = simple_attribute
 
     @dataclass
     class SomeClass:
@@ -26,7 +28,7 @@ def test_encode_something(simple_attribute):
 
 
 def test_dump_load(simple_attribute, tmp_path):
-    some_type, passed_value, expected_value = simple_attribute
+    some_type, _, expected_value = simple_attribute
 
     @dataclass
     class SomeClass:
@@ -49,6 +51,19 @@ def test_dump_load(simple_attribute, tmp_path):
     assert new_b == b
 
 
+def test_dump_load_enum(tmp_path):
+    @dataclass
+    class SomeClass:
+        color: Color = Color.red
+
+    b = SomeClass()
+    tmp_file = tmp_path / 'config.yaml'
+    pyrallis.dump(b, tmp_file.open('w'))
+
+    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
+    assert new_b == b
+
+
 def test_reserved_config_word():
     @dataclass
     class MainClass:
@@ -56,6 +71,7 @@ def test_reserved_config_word():
 
     with raises(PyrallisException):
         pyrallis.parse(MainClass)
+
 
 def test_super_nesting():
     @dataclass

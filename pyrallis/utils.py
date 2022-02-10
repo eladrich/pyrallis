@@ -588,6 +588,20 @@ def format_error(e: Exception):
         return f'Exception: {e}'
 
 
+def is_generic_arg(arg):
+    try:
+        return arg.__name__ in ['KT', 'VT', 'T']
+    except Exception:
+        return False
+
+
+def has_generic_arg(args):
+    for arg in args:
+        if is_generic_arg(arg):
+            return True
+    return False
+
+
 CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":

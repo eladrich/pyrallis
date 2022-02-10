@@ -366,7 +366,7 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 
 
 # TODOs:
-- [ ] Fix error with default Dict and List
+- [x] Fix error with default Dict and List
 >         Underlying error: No decoding function for type ~KT, consider using pyrallis.decode.register
 - [x] Refine the `--help` command
 > For example the `options` argument is confusing there

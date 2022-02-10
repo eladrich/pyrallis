@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from typing import *
-
 import pytest
-
 from .testutils import *
 
 
@@ -80,3 +78,29 @@ def test_parse_multiple_with_list_attributes(
         arguments = "--a " + format_list_using_brackets(value)
         result = SomeClass.setup(arguments)
         assert result == SomeClass(a=value)
+
+
+@parametrize(
+    "item_type, type_hint, value, arg",
+    [
+        (list, List, [1, 2, 3], '[1, 2, 3]'),
+        (set, Set, {1, 2, 3}, '[1, 2, 3]'),
+        (tuple, Tuple, (1, 2, 3), '[1, 2, 3]'),
+        (dict, Dict, {1: 2}, '{1: 2}')
+    ],
+)
+def test_collection_no_type(item_type, type_hint, value, arg):
+    @dataclass
+    class ContainerHint(TestSetup):
+        a: type_hint
+
+    c = ContainerHint.setup(f"--a '{arg}'")
+    assert c.a == value
+
+    @dataclass
+    class ContainerType(TestSetup):
+        a: item_type
+
+    c = ContainerType.setup(f"--a '{arg}'")
+    assert c.a == value
+

@@ -145,6 +145,8 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
     elif is_tuple(t):
         logger.debug(f"Decoding a Tuple field: {t}")
         args = get_type_arguments(t)
+        if args is None:
+            args = []
         return decode_tuple(*args)
 
     elif is_list(t):  # NOTE: Looks like can't be written with a dictionary

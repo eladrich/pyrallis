@@ -2,7 +2,7 @@
 """
 from collections import OrderedDict
 from dataclasses import Field, MISSING, fields, is_dataclass
-from functools import lru_cache, singledispatch
+from functools import lru_cache
 from functools import partial
 from logging import getLogger
 from typing import TypeVar, Any, Dict, Type, Callable, Optional, Union, List, Tuple, Set
@@ -19,7 +19,8 @@ from pyrallis.utils import (
     is_enum,
     ParsingError,
     format_error,
-    has_generic_arg
+    has_generic_arg,
+    withregistry,
 )
 
 logger = getLogger(__name__)
@@ -30,7 +31,7 @@ V = TypeVar("V")
 Dataclass = TypeVar("Dataclass")
 
 
-@singledispatch
+@withregistry
 def decode(t: Type[T], raw_value: Any) -> T:
     return get_decoding_fn(t)(raw_value)
 
@@ -117,9 +118,13 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
     wasteful calls to the function. This makes this process pretty efficient.
 
     """
-    if t in decode.registry:
-        # The type has a dedicated decoding function.
-        return decode.dispatch(t)  # This returns the singledispatch function
+    # Start by trying the dispatch mechanism
+    cached_func = decode.dispatch(t)
+    if cached_func is not None:
+        if cached_func.pass_type:
+            return partial(cached_func.func, t)
+        else:
+            return cached_func.func
 
     elif is_dataclass(t):
         return partial(decode_dataclass, t)

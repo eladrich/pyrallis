@@ -4,11 +4,14 @@ import builtins
 import collections.abc as c_abc
 import dataclasses
 import enum
+import functools
 import inspect
 import logging
+from abc import get_cache_token
 from collections import OrderedDict
-from dataclasses import _MISSING_TYPE
+from dataclasses import _MISSING_TYPE, dataclass
 from enum import Enum
+from functools import _find_impl, update_wrapper
 from logging import getLogger
 from typing import (
     Any,
@@ -600,6 +603,84 @@ def has_generic_arg(args):
         if is_generic_arg(arg):
             return True
     return False
+
+@dataclass
+class CachedFunc:
+    func : Callable
+    pass_type : bool
+
+
+def withregistry(base_func):
+    import types, weakref
+
+    registry = {}
+    dispatch_cache = weakref.WeakKeyDictionary()
+    cache_token = None
+
+    def dispatch(cls) -> CachedFunc:
+        nonlocal cache_token
+        if cache_token is not None:
+            current_token = get_cache_token()
+            if cache_token != current_token:
+                dispatch_cache.clear()
+                cache_token = current_token
+        if cls in dispatch_cache:
+            impl = dispatch_cache[cls]
+        else:
+            if cls in registry:
+                impl = registry[cls]
+            else:
+                try:
+                    impl = _find_impl(cls, registry)
+                except Exception:
+                    impl = None
+            dispatch_cache[cls] = impl
+
+        return impl
+
+    def register(cls, func=None, pass_type=False):
+        nonlocal cache_token
+        if func is None:
+            if isinstance(cls, type):
+                return lambda f: register(cls, f)
+            ann = getattr(cls, '__annotations__', {})
+            if not ann:
+                raise TypeError(
+                    f"Invalid first argument to `register()`: {cls!r}. "
+                    f"Use either `@register(some_class)` or plain `@register` "
+                    f"on an annotated function."
+                )
+            func = cls
+
+            # only import typing if annotation parsing is necessary
+            from typing import get_type_hints
+            argname, cls = next(iter(get_type_hints(func).items()))
+            assert isinstance(cls, type), (
+                f"Invalid annotation for {argname!r}. {cls!r} is not a class."
+            )
+        registry[cls] = CachedFunc(func, pass_type)
+        if cache_token is None and hasattr(cls, '__abstractmethods__'):
+            cache_token = get_cache_token()
+        dispatch_cache.clear()
+        return func
+
+    def wrapper(*args, **kw):
+        return base_func(*args, **kw)
+
+    wrapper.register = register
+    wrapper.dispatch = dispatch
+    wrapper.registry = types.MappingProxyType(registry)
+    wrapper._clear_cache = dispatch_cache.clear
+    update_wrapper(wrapper, base_func)
+    return wrapper
+
+
+def has_multiple_args(func):
+    from inspect import signature
+    try:
+        return len(signature(func).parameters) > 1
+    except Exception:
+        return False
 
 
 CONFIG_ARG = 'config_path'

@@ -1,14 +1,11 @@
 """Utility functions used in various parts of the pyrallis package."""
-import argparse
 import builtins
 import collections.abc as c_abc
 import dataclasses
 import enum
-import functools
 import inspect
 import logging
 from abc import get_cache_token
-from collections import OrderedDict
 from dataclasses import _MISSING_TYPE, dataclass
 from enum import Enum
 from functools import _find_impl, update_wrapper
@@ -51,22 +48,10 @@ builtin_types = [
     if isinstance(getattr(builtins, d), type)
 ]
 
-K = TypeVar("K")
 T = TypeVar("T")
-U = TypeVar("U")
-V = TypeVar("V")
-W = TypeVar("W")
 
 Dataclass = TypeVar("Dataclass")
 DataclassType = Type[Dataclass]
-
-SimpleValueType = Union[bool, int, float, str]
-SimpleIterable = Union[
-    List[SimpleValueType], Dict[Any, SimpleValueType], Set[SimpleValueType]
-]
-
-TRUE_STRINGS: List[str] = ["yes", "true", "t", "y", "1"]
-FALSE_STRINGS: List[str] = ["no", "false", "f", "n", "0"]
 
 
 class PyrallisException(Exception):
@@ -77,23 +62,6 @@ class ParsingError(PyrallisException):
     pass
 
 
-def str2bool(raw_value: Union[str, bool]) -> bool:
-    """
-    Taken from https://stackoverflow.com/questions/15008758/parsing-boolean-values-with-argparse
-    """
-    if isinstance(raw_value, bool):
-        return raw_value
-    v = raw_value.strip().lower()
-    if v in TRUE_STRINGS:
-        return True
-    elif v in FALSE_STRINGS:
-        return False
-    else:
-        raise argparse.ArgumentTypeError(
-            f"Boolean value expected for argument, received '{raw_value}'"
-        )
-
-
 def get_item_type(container_type: Type[Container[T]]) -> T:
     """Returns the `type` of the items in the provided container `type`.
 
@@ -101,41 +69,6 @@ def get_item_type(container_type: Type[Container[T]]) -> T:
     `typing.Any`.
     NOTE: If a type with multiple arguments is passed, only the first type
     argument is returned.
-
-    >>> import typing
-    >>> from typing import List, Tuple
-    >>> get_item_type(list)
-    typing.Any
-    >>> get_item_type(List)
-    typing.Any
-    >>> get_item_type(tuple)
-    typing.Any
-    >>> get_item_type(Tuple)
-    typing.Any
-    >>> get_item_type(List[int])
-    <class 'int'>
-    >>> get_item_type(List[str])
-    <class 'str'>
-    >>> get_item_type(List[float])
-    <class 'float'>
-    >>> get_item_type(List[float])
-    <class 'float'>
-    >>> get_item_type(List[Tuple])
-    typing.Tuple
-    >>> get_item_type(List[Tuple[int, int]])
-    typing.Tuple[int, int]
-    >>> get_item_type(Tuple[int, str])
-    <class 'int'>
-    >>> get_item_type(Tuple[str, int])
-    <class 'str'>
-    >>> get_item_type(Tuple[str, str, str, str])
-    <class 'str'>
-
-    Arguments:
-        list_type {Type} -- A type, preferably one from the Typing module (List, Tuple, etc).
-
-    Returns:
-        Type -- the type of the container's items, if found, else Any.
     """
     if container_type in {
         list,
@@ -157,31 +90,6 @@ def get_item_type(container_type: Type[Container[T]]) -> T:
         return Any
 
 
-def get_argparse_type_for_container(
-        container_type: Type,
-) -> Union[Type, Callable[[str], bool]]:
-    """Gets the argparse 'type' option to be used for a given container type.
-    When an annotation is present, the 'type' option of argparse is set to that type.
-    if not, then the default value of 'str' is returned.
-
-    Arguments:
-        container_type {Type} -- A container type (ideally a typing.Type such as List, Tuple, along with an item annotation: List[str], Tuple[int, int], etc.)
-
-    Returns:
-        typing.Type -- the type that should be used in argparse 'type' argument option.
-
-    TODO: This overlaps in a weird way with `get_parsing_fn`, which returns the 'type'
-    to use for a given annotation! This function however doesn't deal with 'weird' item
-    types, it just returns the first annotation.
-    """
-    T = get_item_type(container_type)
-    if T is bool:
-        return str2bool
-    if T is Any:
-        return str
-    return T
-
-
 def _mro(t: Type) -> List[Type]:
     # TODO: This is mostly used in 'is_tuple' and such, and should be replaced with
     # either the build-in 'get_origin' from typing, or from typing-inspect.
@@ -197,136 +105,21 @@ def _mro(t: Type) -> List[Type]:
 
 
 def is_list(t: Type) -> bool:
-    """returns True when `t` is a List type.
-
-    Args:
-        t (Type): a type.
-
-    Returns:
-        bool: True if `t` is list or a subclass of list.
-
-    >>> from typing import *
-    >>> is_list(list)
-    True
-    >>> is_list(tuple)
-    False
-    >>> is_list(List)
-    True
-    >>> is_list(List[int])
-    True
-    >>> is_list(List[Tuple[int, str, None]])
-    True
-    >>> is_list(Optional[List[int]])
-    False
-    >>> class foo(List[int]):
-    ...   pass
-    ...
-    >>> is_list(foo)
-    True
-    """
     return list in _mro(t)
 
 
 def is_tuple(t: Type) -> bool:
-    """returns True when `t` is a tuple type.
-
-    Args:
-        t (Type): a type.
-
-    Returns:
-        bool: True if `t` is tuple or a subclass of tuple.
-
-    >>> from typing import *
-    >>> is_tuple(list)
-    False
-    >>> is_tuple(tuple)
-    True
-    >>> is_tuple(Tuple)
-    True
-    >>> is_tuple(Tuple[int])
-    True
-    >>> is_tuple(Tuple[int, str, None])
-    True
-    >>> class foo(tuple):
-    ...   pass
-    ...
-    >>> is_tuple(foo)
-    True
-    >>> is_tuple(List[int])
-    False
-    """
     return tuple in _mro(t)
 
 
 def is_dict(t: Type) -> bool:
-    """returns True when `t` is a dict type or annotation.
-
-    Args:
-        t (Type): a type.
-
-    Returns:
-        bool: True if `t` is dict or a subclass of dict.
-
-    >>> from typing import *
-    >>> from collections import OrderedDict
-    >>> is_dict(dict)
-    True
-    >>> is_dict(OrderedDict)
-    True
-    >>> is_dict(tuple)
-    False
-    >>> is_dict(Dict)
-    True
-    >>> is_dict(Dict[int, float])
-    True
-    >>> is_dict(Dict[Any, Dict])
-    True
-    >>> is_dict(Optional[Dict])
-    False
-    >>> is_dict(Mapping[str, int])
-    True
-    >>> class foo(Dict):
-    ...   pass
-    ...
-    >>> is_dict(foo)
-    True
-    """
     mro = _mro(t)
     return dict in mro or Mapping in mro or c_abc.Mapping in mro
 
 
 def is_set(t: Type) -> bool:
-    """returns True when `t` is a set type or annotation.
-
-    Args:
-        t (Type): a type.
-
-    Returns:
-        bool: True if `t` is set or a subclass of set.
-
-    >>> from typing import *
-    >>> is_set(set)
-    True
-    >>> is_set(Set)
-    True
-    >>> is_set(tuple)
-    False
-    >>> is_set(Dict)
-    False
-    >>> is_set(Set[int])
-    True
-    >>> is_set(Set["something"])
-    True
-    >>> is_set(Optional[Set])
-    False
-    >>> class foo(Set):
-    ...   pass
-    ...
-    >>> is_set(foo)
-    True
-    """
     mro = _mro(t)
-    return set in _mro(t)
+    return set in mro
 
 
 def is_dataclass_type(t: Type) -> bool:
@@ -358,51 +151,10 @@ def is_tuple_or_list(t: Type) -> bool:
 
 
 def is_union(t: Type) -> bool:
-    """Returns wether or not the given Type annotation is a variant (or subclass) of typing.Union
-
-    Args:
-        t (Type): some type annotation
-
-    Returns:
-        bool: Wether this type represents a Union type.
-
-    >>> from typing import *
-    >>> is_union(Union[int, str])
-    True
-    >>> is_union(Union[int, str, float])
-    True
-    >>> is_union(Tuple[int, str])
-    False
-    """
     return getattr(t, "__origin__", "") == Union
 
 
 def is_homogeneous_tuple_type(t: Type[Tuple]) -> bool:
-    """Returns wether the given Tuple type is homogeneous: if all items types are the
-    same.
-
-    This also includes Tuple[<some_type>, ...]
-
-    Returns
-    -------
-    bool
-
-    >>> from typing import *
-    >>> is_homogeneous_tuple_type(Tuple)
-    True
-    >>> is_homogeneous_tuple_type(Tuple[int, int])
-    True
-    >>> is_homogeneous_tuple_type(Tuple[int, str])
-    False
-    >>> is_homogeneous_tuple_type(Tuple[int, str, float])
-    False
-    >>> is_homogeneous_tuple_type(Tuple[int, ...])
-    True
-    >>> is_homogeneous_tuple_type(Tuple[Tuple[int, str], ...])
-    True
-    >>> is_homogeneous_tuple_type(Tuple[List[int], List[str]])
-    False
-    """
     if not is_tuple(t):
         return False
     type_arguments = get_type_arguments(t)
@@ -411,38 +163,11 @@ def is_homogeneous_tuple_type(t: Type[Tuple]) -> bool:
     assert isinstance(type_arguments, tuple), type_arguments
     if len(type_arguments) == 2 and type_arguments[1] is Ellipsis:
         return True
-    # Tuple[str, str, str] -> True
-    # Tuple[str, str, float] -> False
     # TODO: Not sure if this will work with more complex item times (like nested tuples)
     return len(set(type_arguments)) == 1
 
 
 def is_optional(t: Type) -> bool:
-    """Returns True if the given Type is a variant of the Optional type.
-
-    Parameters
-    ----------
-    - t : Type
-
-        a Type annotation (or "live" type)
-
-    Returns
-    -------
-    bool
-        Wether or not this is an Optional.
-
-    >>> from typing import Union, Optional, List
-    >>> is_optional(str)
-    False
-    >>> is_optional(Optional[str])
-    True
-    >>> is_optional(Union[str, None])
-    True
-    >>> is_optional(Union[str, List])
-    False
-    >>> is_optional(Union[str, List, int, float, None])
-    True
-    """
     return is_union(t) and type(None) in get_type_arguments(t)
 
 
@@ -527,22 +252,6 @@ def get_defaults_dict(c: Dataclass):
 
 
 def keep_keys(d: Dict, keys_to_keep: Iterable[str]) -> Tuple[Dict, Dict]:
-    """Removes all the keys in `d` that aren't in `keys`.
-
-    Parameters
-    ----------
-    d : Dict
-        Some dictionary.
-    keys_to_keep : Iterable[str]
-        The set of keys to keep
-
-    Returns
-    -------
-    Tuple[Dict, Dict]
-        The same dictionary (with all the unwanted keys removed) as well as a
-        new dict containing only the removed item.
-
-    """
     d_keys = set(d.keys())  # save a copy since we will modify the dict.
     removed = {}
     for key in d_keys:
@@ -604,10 +313,13 @@ def has_generic_arg(args):
             return True
     return False
 
+
 @dataclass
-class CachedFunc:
-    func : Callable
-    pass_type : bool
+class RegistryFunc:
+    # The function saved in the registry
+    func: Callable
+    # Whether the function expects the type to be passed
+    pass_cls: bool
 
 
 def withregistry(base_func):
@@ -617,7 +329,7 @@ def withregistry(base_func):
     dispatch_cache = weakref.WeakKeyDictionary()
     cache_token = None
 
-    def dispatch(cls) -> CachedFunc:
+    def dispatch(cls) -> Optional[RegistryFunc]:
         nonlocal cache_token
         if cache_token is not None:
             current_token = get_cache_token()
@@ -631,14 +343,17 @@ def withregistry(base_func):
                 impl = registry[cls]
             else:
                 try:
-                    impl = _find_impl(cls, registry)
+                    impl : Optional[RegistryFunc] = _find_impl(cls, registry)
+                    if not impl.pass_cls:
+                        # Do not allow implicit inherited implementation without type
+                        impl = None
                 except Exception:
                     impl = None
             dispatch_cache[cls] = impl
 
         return impl
 
-    def register(cls, func=None, pass_type=False):
+    def register(cls, func=None, pass_cls=False):
         nonlocal cache_token
         if func is None:
             if isinstance(cls, type):
@@ -658,13 +373,14 @@ def withregistry(base_func):
             assert isinstance(cls, type), (
                 f"Invalid annotation for {argname!r}. {cls!r} is not a class."
             )
-        registry[cls] = CachedFunc(func, pass_type)
+        registry[cls] = RegistryFunc(func, pass_cls)
         if cache_token is None and hasattr(cls, '__abstractmethods__'):
             cache_token = get_cache_token()
         dispatch_cache.clear()
         return func
 
     def wrapper(*args, **kw):
+        # Unlike singledispatch we do not directly override the base call
         return base_func(*args, **kw)
 
     wrapper.register = register
@@ -674,13 +390,6 @@ def withregistry(base_func):
     update_wrapper(wrapper, base_func)
     return wrapper
 
-
-def has_multiple_args(func):
-    from inspect import signature
-    try:
-        return len(signature(func).parameters) > 1
-    except Exception:
-        return False
 
 
 CONFIG_ARG = 'config_path'

@@ -582,6 +582,27 @@ def remove_matching(dict_a, dict_b):
     return deflatten(dict_a)
 
 
+def format_error(e: Exception):
+    try:
+        return f'{type(e).__name__}: {e}'
+    except Exception:
+        return f'Exception: {e}'
+
+
+def is_generic_arg(arg):
+    try:
+        return arg.__name__ in ['KT', 'VT', 'T']
+    except Exception:
+        return False
+
+
+def has_generic_arg(args):
+    for arg in args:
+        if is_generic_arg(arg):
+            return True
+    return False
+
+
 CONFIG_ARG = 'config_path'
 
 if __name__ == "__main__":

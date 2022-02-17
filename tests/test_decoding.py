@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum, auto
 
 import yaml
 import json
@@ -7,8 +8,13 @@ from pyrallis.utils import PyrallisException
 from .testutils import *
 
 
+class Color(Enum):
+    blue: str = auto()
+    red: str = auto()
+
+
 def test_encode_something(simple_attribute):
-    some_type, passed_value, expected_value = simple_attribute
+    some_type, _, expected_value = simple_attribute
 
     @dataclass
     class SomeClass:
@@ -26,7 +32,7 @@ def test_encode_something(simple_attribute):
 
 @parametrize('config_type', ['', 'yaml', 'json', 'toml'])
 def test_dump_load(simple_attribute, config_type, tmp_path):
-    some_type, passed_value, expected_value = simple_attribute
+    some_type, _, expected_value = simple_attribute
 
     if config_type != '':
         pyrallis.set_config_type(config_type)
@@ -87,13 +93,26 @@ def test_dump_load_dicts(simple_attribute, tmp_path):
     b.l.append((expected_value, expected_value))
     b.t.update({"hey": None, "hey2": expected_value})
 
-    tmp_file = tmp_path / f'config'
+    tmp_file = tmp_path / 'config'
     pyrallis.dump(b, tmp_file.open('w'))
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
     arguments = shlex.split(f"--config_path {tmp_file}")
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
+    assert new_b == b
+
+
+def test_dump_load_enum(tmp_path):
+    @dataclass
+    class SomeClass:
+        color: Color = Color.red
+
+    b = SomeClass()
+    tmp_file = tmp_path / 'config.yaml'
+    pyrallis.dump(b, tmp_file.open('w'))
+
+    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
 
 

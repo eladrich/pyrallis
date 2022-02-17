@@ -15,7 +15,9 @@ from pyrallis.utils import (
     is_tuple,
     is_union,
     is_enum,
-    ParsingError
+    ParsingError,
+    format_error,
+    has_generic_arg
 )
 
 logger = getLogger(__name__)
@@ -65,7 +67,7 @@ def decode_dataclass(
             raise e
         except Exception as e:
             raise ParsingError(
-                f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error: {e}")
+                f"Failed when parsing value='{raw_value}' into field \"{cls}.{name}\" of type {field.type}.\n\tUnderlying error is \"{format_error(e)}\"")
 
         if field.init:
             init_args[name] = field_value
@@ -127,30 +129,31 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
     elif is_dict(t):
         logger.debug(f"Decoding a Dict field: {t}")
         args = get_type_arguments(t)
-        if len(args) != 2:
+        if args is None or len(args) != 2 or has_generic_arg(args):
             args = (Any, Any)
         return decode_dict(*args)
 
     elif is_set(t):
         logger.debug(f"Decoding a Set field: {t}")
         args = get_type_arguments(t)
-        if len(args) != 1:
+        if args is None or len(args) != 1 or has_generic_arg(args):
             args = (Any,)
         return decode_set(args[0])
 
     elif is_tuple(t):
         logger.debug(f"Decoding a Tuple field: {t}")
         args = get_type_arguments(t)
+        if args is None:
+            args = []
         return decode_tuple(*args)
 
     elif is_list(t):  # NOTE: Looks like can't be written with a dictionary
         logger.debug(f"Decoding a List field: {t}")
         args = get_type_arguments(t)
-        if not args:
+        if args is None or len(args) != 1 or has_generic_arg(args):
             # Using a `List` or `list` annotation, so we don't know what do decode the
             # items into!
             args = (Any,)
-        assert len(args) == 1
         decode_fn = decode_list(args[0])
 
         return decode_fn
@@ -161,7 +164,7 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
         return decode_union(*args)
 
     elif is_enum(t):
-        return t
+        return lambda key: t[key]
 
     import typing_inspect as tpi
 

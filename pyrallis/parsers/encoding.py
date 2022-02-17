@@ -99,7 +99,7 @@ def encode_dict(obj: Mapping) -> Dict[Any, Any]:
 
 @encode.register(Enum)
 def encode_enum(obj: Enum) -> str:
-    return obj.value
+    return obj.name
 
 
 for t in [str, float, int, bool, bytes]:

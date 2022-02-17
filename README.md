@@ -1,5 +1,13 @@
 <p align="center"><img src="https://raw.githubusercontent.com/eladrich/pyrallis/master/docs/pyrallis_logo.png" alt="logo" width="70%" /></p>
 
+<p align="center">
+    <a href="https://badge.fury.io/py/pyrallis"><img src="https://badge.fury.io/py/pyrallis.svg" alt="PyPI version" height="18"></a>
+    <a href="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml"><img src="https://github.com/eladrich/pyrallis/actions/workflows/pytest.yml/badge.svg" alt="PyTest" height="18"></a>
+    <a href="https://pepy.tech/project/pyrallis"><img src="https://pepy.tech/badge/pyrallis" alt="Downloads" height="18"></a>
+    <a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-2-orange.svg" alt="All Contributors" height="18"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" height="18"></a>
+</p>
+
 
 # Pyrallis - Simple Configuration with Dataclasses
 
@@ -358,8 +366,28 @@ The `pyrallis.field` behaves like the regular `dataclasses.field` with an additi
 
 
 # TODOs:
-- [ ] Fix error with default Dict and List
+- [x] Fix error with default Dict and List
 >         Underlying error: No decoding function for type ~KT, consider using pyrallis.decode.register
 - [x] Refine the `--help` command
 > For example the `options` argument is confusing there
 - [ ] Add a test to `omit_defaults`
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://about.me/ido.weiss"><img src="https://avatars.githubusercontent.com/u/10072365?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ido Weiss</b></sub></a><br /><a href="#design-idow09" title="Design">🎨</a> <a href="#ideas-idow09" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/yairf11"><img src="https://avatars.githubusercontent.com/u/13931256?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yair Feldman</b></sub></a><br /><a href="#design-yairf11" title="Design">🎨</a> <a href="#ideas-yairf11" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

@@ -1,0 +1,35 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "idow09",
+      "name": "idow09",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10072365?v=4",
+      "profile": "https://about.me/ido.weiss",
+      "contributions": [
+        "design",
+        "ideas"
+      ]
+    },
+    {
+      "login": "yairf11",
+      "name": "Yair Feldman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13931256?v=4",
+      "profile": "https://github.com/yairf11",
+      "contributions": [
+        "design",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "pyrallis",
+  "projectOwner": "eladrich",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

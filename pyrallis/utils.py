@@ -29,7 +29,6 @@ from typing import (
 
 import typing_inspect as tpi
 
-from .config import Config, ConfigType
 
 try:
     from typing import get_args
@@ -572,60 +571,6 @@ def deflatten(d: Dict[str, Any], sep: str = '.'):
             curr_d = curr_d[inner_key]
         curr_d[key_parts[-1]] = d[key]
     return deflat_d
-
-
-def parse_string(s):
-    if Config.get_config_type() == ConfigType.YAML:
-        import yaml
-        return yaml.safe_load(s)
-    elif Config.get_config_type() == ConfigType.JSON:
-        import json
-        try:
-            return json.loads(s)
-        except json.decoder.JSONDecodeError:
-            return s # No parsing to be done, simply return value
-    elif Config.get_config_type() == ConfigType.TOML:
-        import toml
-        try:
-            return toml.loads(f'val = {s}')['val']
-        except toml.decoder.TomlDecodeError:
-            return s
-    else:
-        raise PyrallisException('Unsupported config type')
-
-
-def load_config(stream):
-    if Config.get_config_type() == ConfigType.YAML:
-        import yaml
-        return yaml.full_load(stream)
-    elif Config.get_config_type() == ConfigType.JSON:
-        import json
-        return json.load(stream)
-    elif Config.get_config_type() == ConfigType.TOML:
-        import toml
-        return toml.load(stream)
-    else:
-        raise PyrallisException('Unsupported config type')
-
-
-def save_config(d, stream=None, **kwargs):
-    if Config.get_config_type() == ConfigType.YAML:
-        import yaml
-        return yaml.dump(d, stream, **kwargs)
-    elif Config.get_config_type() == ConfigType.JSON:
-        import json
-        if stream is None:
-            return json.dumps(d, **kwargs)
-        else:
-            return json.dump(d, stream, **kwargs)
-    elif Config.get_config_type() == ConfigType.TOML:
-        import toml
-        if stream is None:
-            return toml.dumps(d, **kwargs)
-        else:
-            return toml.dump(d, stream, **kwargs)
-    else:
-        raise PyrallisException('Unsupported config type')
 
 
 def remove_matching(dict_a, dict_b):

@@ -7,7 +7,6 @@ from functools import partial
 from logging import getLogger
 from typing import TypeVar, Any, Dict, Type, Callable, Optional, Union, List, Tuple, Set
 
-
 from pyrallis.utils import (
     get_type_arguments,
     is_dict,
@@ -16,8 +15,7 @@ from pyrallis.utils import (
     is_tuple,
     is_union,
     is_enum,
-    ParsingError,
-    load_config
+    ParsingError
 )
 
 logger = getLogger(__name__)
@@ -315,6 +313,3 @@ from pathlib import Path
 decode.register(Path, Path)
 
 
-def load(t: Type[Dataclass], stream):
-    dict = load_config(stream)
-    return decode(t, dict)

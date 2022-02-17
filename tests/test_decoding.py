@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 
+import yaml
+import json
+
 from pyrallis.utils import PyrallisException
 from .testutils import *
 
@@ -32,10 +35,9 @@ def test_dump_load(simple_attribute, config_type, tmp_path):
     class SomeClass:
         val: Optional[some_type] = None
 
-    b = SomeClass()
-    b.val = expected_value
+    b = SomeClass(val=expected_value)
 
-    tmp_file = tmp_path / f'config'
+    tmp_file = tmp_path / 'config'
     pyrallis.dump(b, tmp_file.open('w'))
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
@@ -51,8 +53,28 @@ def test_dump_load(simple_attribute, config_type, tmp_path):
     pyrallis.set_config_type('yaml')
 
 
+def test_dump_load_context():
+    @dataclass
+    class SomeClass:
+        val: str = 'hello'
+
+    b = SomeClass()
+
+    yaml_str = pyrallis.dump(b)
+    assert yaml_str == yaml.dump(pyrallis.encode(b))
+
+    with pyrallis.config_type('json'):
+        json_str = pyrallis.dump(b)
+        assert json_str == json.dumps(pyrallis.encode(b))
+
+    yaml_str = pyrallis.dump(b)
+    assert yaml_str == yaml.dump(pyrallis.encode(b))
+
+    assert pyrallis.get_config_type() is pyrallis.ConfigType.YAML
+
+
 def test_dump_load_dicts(simple_attribute, tmp_path):
-    some_type, passed_value, expected_value = simple_attribute
+    some_type, _, expected_value = simple_attribute
 
     @dataclass
     class SomeClass:

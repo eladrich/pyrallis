@@ -7,8 +7,6 @@ from functools import partial
 from logging import getLogger
 from typing import TypeVar, Any, Dict, Type, Callable, Optional, Union, List, Tuple, Set
 
-import yaml
-
 from pyrallis.utils import (
     get_type_arguments,
     is_dict,
@@ -318,6 +316,3 @@ from pathlib import Path
 decode.register(Path, Path)
 
 
-def load(t: Type[Dataclass], stream, Loader=yaml.SafeLoader):
-    dict = yaml.load(stream=stream, Loader=Loader)
-    return decode(t, dict)

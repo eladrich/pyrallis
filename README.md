@@ -66,6 +66,7 @@ Building on that design `pyrallis` offers some really enjoyable features includi
 * Easy extension to new types using `pyrallis.encode.register` and `pyrallis.decode.register` 👽
 * Easy loading and saving of existing configurations using `pyrallis.dump` and `pyrallis.load` 💾
 * Magical `--help` creation from dataclasses, taking into account the comments as well! 😎
+* Support for multiple configuration formats (`yaml`, `json`,`toml`) using `pyrallis.set_config_type` ⚙️
 
 
 ## Getting to Know The `pyrallis` API in 5 Simple Steps 🐲
@@ -312,26 +313,7 @@ We decided to create a simple hybrid of the two approaches, building from `Simpl
 
 If `pyrallis` isn't what you're looking for we strongly advise you to give `hydra` and `simpleParsing` a try (where other interesting option include `click`, `ext_argpase`, `jsonargparse`, `datargs` and `tap`). If you do :heart: `pyrallis` then welcome aboard! We're gonna have a great journey together! 🐲
 
-## Design Choices and Some More
-
-### Uniform Parsing Syntax
-For parsing files we opted for `yaml` as our format of choice, following `hydra`, due to its concise format. 
-Now, let us assume we have the following `.yaml` file which `yaml` successfully handles:
-```yaml
-compute:
-  worker_inds: [0,2,3]
-```
-Intuitively we would also want users to be able to use the same syntax 
-```cmd
-python my_app.py --compute.worker_inds=[0,2,3]
-```
-
-However, the more standard syntax for an argparse application would be 
-```cmd
-python my_app.py --compute.worker_inds 0 2 3
-```
-
-We decided to use the same syntax as in the `yaml` files to avoid confusion when loading from multiple sources. 
+## Tips and Design Choices
 
 ### Beware of Mutable Types (or use pyrallis.field)
 Dataclasses are great (really!) but using mutable fields can sometimes be confusing. For example, say we try to code the following dataclass
@@ -362,6 +344,29 @@ from pyrallis import field
 worker_inds: List[int] = field(default=[1,2,3], is_mutable=True)
 ```
 The `pyrallis.field` behaves like the regular `dataclasses.field` with an additional `is_mutable` flag. When toggled, the `default_factory` is created automatically, offering the same functionally with a more reader-friendly syntax.
+
+
+
+### Uniform Parsing Syntax
+For parsing files we opted for `yaml` as our format of choice, following `hydra`, due to its concise format. 
+Now, let us assume we have the following `.yaml` file which `yaml` successfully handles:
+```yaml
+compute:
+  worker_inds: [0,2,3]
+```
+Intuitively we would also want users to be able to use the same syntax 
+```cmd
+python my_app.py --compute.worker_inds=[0,2,3]
+```
+
+However, the more standard syntax for an argparse application would be 
+```cmd
+python my_app.py --compute.worker_inds 0 2 3
+```
+
+We decided to use the same syntax as in the `yaml` files to avoid confusion when loading from multiple sources.
+
+Not a `yaml` fun? `pyrallis` also supports `json` and `toml` formats using `pyrallis.set_config_type('json')` or `with pyrallis.config_type('json'):`
 
 
 

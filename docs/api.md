@@ -435,6 +435,47 @@ cfg = pyrallis.load(TrainConfig, open('/configs/train_config.yaml','r'))
 print('Loaded config has {cfg.workers} workers')
 ```
 
+### pyrallis.set_config_type
+```python
+def set_config_type(type_val: Union[ConfigType, str])
+```
+By default, pyrallis uses `yaml` for parsing string and files and this is its recommended format. However, pyrallis also supports `json` and `toml`. When using `pyrallis.set_config_type` the global context of pyrallis will change so that the matching configuration format will be used for  `pyrallis.parse`, `pyrallis.dump` and `pyrallis.load`.
+
+To change the configuration type for a specific context use the  `with` context
+
+```python
+with pyrallis.config_type('json'):
+    pyrallis.dump(cfg)
+```
+
+!!! info
+
+    Note that the `pyrallis.parse` function is also dependent on the configuration format as strings from cmd are first parsed based on the current configuration format. This ensures a unified behavior when parsing from files and cmd arguments.
+
+> Parameters
+
+* **type_val** - A string representing the desired format (`#!python "json", "yaml", "toml"`) or the matching enum value (`#!python pyrallis.ConfigType.YAML`)
+
+
+> Example
+
+```python
+import pyrallis
+pyrallis.set_config_type('json')
+
+@dataclass
+class TrainConfig:
+    """ Training config for Machine Learning """
+    workers: int = 8 # The number of workers for training
+    exp_name: str = 'default_exp' # The experiment name
+
+@pyrallis.wrap()
+def main(cfg: TrainConfig):
+    pyrallis.dump(cfg)
+    
+    with pyrallis.config_type('yaml'):
+        pyrallis.dump(cfg)
+```
 
 ## Helper Functions
 ### pyrallis.field

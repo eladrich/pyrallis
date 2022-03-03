@@ -15,7 +15,7 @@ class Options:
 
     @staticmethod
     def set_config_type(new_type: Union[ConfigType, str]):
-        if type(new_type) == str:
+        if isinstance(new_type, str):
             new_type = ConfigType[new_type.upper()]
         Options._config_type = new_type
 

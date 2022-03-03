@@ -74,15 +74,15 @@ workers: 42
 ### Key Features
 Building on that design pyrallis offers some really enjoyable features including 
 
-* Builtin IDE support for autocompletion and linting thanks to the structured config.
-* Joint reading from command-line and a config file, with support for specifying default config_path for the `pyrallis.parse` call
+* Builtin IDE support for autocompletion and linting thanks to the structured config. 🤓
+* Joint reading from command-line and a config file, with support for specifying default config_path for the `pyrallis.parse` call 😍
 ```python
 cfg = pyrallis.parse(config_class=TrainConfig, 
                      config_path='/configs/default_config.yaml')
 ```
-* Support for builtin dataclass features, such as `__post_init__` and `@property`
-* Support for nesting and inheritance of dataclasses, nested arguments are automatically created!
-* A magical `@pyrallis.wrap()` decorator for wrapping your main class
+* Support for builtin dataclass features, such as `__post_init__` and `@property` 😁
+* Support for nesting and inheritance of dataclasses, nested arguments are automatically created! 😲
+* A magical `@pyrallis.wrap()` decorator for wrapping your main class 🪄
 === "@pyrallis.wrap"
 
     ``` python
@@ -98,9 +98,10 @@ cfg = pyrallis.parse(config_class=TrainConfig,
         cfg = pyrallis.parse(config_class=TrainConfig)
         print(f'Training {cfg.exp_name} with {cfg.workers} workers...')
     ```
-* Easy extension to new types using `pyrallis.encode.register` and `pyrallis.decode.register`
-* Easy loading and saving of existing configurations using `pyrallis.dump` and `pyrallis.load`
-* Magical `--help` creation from dataclasses, taking into account the comments as well!
+* Easy extension to new types using `pyrallis.encode.register` and `pyrallis.decode.register` 👽
+* Easy loading and saving of existing configurations using `pyrallis.dump` and `pyrallis.load` 💾
+* Magical `--help` creation from dataclasses, taking into account the comments as well! 😎
+* Support for multiple configuration formats (`yaml`, `json`,`toml`) using `pyrallis.set_config_type` ⚙️
 
 That's basically it, see the rest of this documentation for more complete tutorial and info.
 

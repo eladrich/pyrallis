@@ -384,8 +384,8 @@ The `pathlib.Path` type is useful for path manipulation, and hence a useful type
 ```python
 def dump(config: Dataclass, stream=None, omit_defaults: bool = False, **kwargs)
 ```
-Serialize a configuration dataclass into a YAML stream. If stream is None, return the produced string instead. Additional arguments are passed along to `yaml.dump`.
-In practice this function uses pyrallis.encode to create a standard dictionary from the dataclass which is then passed along to `yaml`.
+Serialize a configuration dataclass into a file stream. If stream is None, return the produced string instead. Additional arguments are passed along to the `dump` function of the current configuration format.
+In practice this function uses pyrallis.encode to create a standard dictionary from the dataclass which is then passed along to the configuration parser.
 
 > Parameters
 
@@ -396,7 +396,7 @@ In practice this function uses pyrallis.encode to create a standard dictionary f
 
 > Returns
 
-If no stream is provided, returns the produced `yaml` string. Otherwise, no return value.
+If no stream is provided, returns the produced string. Otherwise, no return value.
 
 > Example:
 
@@ -412,16 +412,15 @@ def main(cfg: TrainConfig):
 
 ### pyrallis.load
 ```python
-def load(t: Type[Dataclass], stream, Loader=yaml.SafeLoader):
+def load(t: Type[Dataclass], stream):
 ```
-Parse the `yaml` document from the stream and produce the corresponding dataclass
-In practice this function first loads a dictionary from the `yaml` file and then uses `pyrallis.decode` to generate a valid dataclass from it.
+Parse the document from the stream and produce the corresponding dataclass
+In practice this function first loads a dictionary from the stream and then uses `pyrallis.decode` to generate a valid dataclass from it.
 
 > Parameters
 
 * **t (Type[dataclass])** - The dataclass type to load into
 * **stream** - The input stream to load
-* **Loader** - The yaml loader to use, default is the `yaml.SafeLoader`
 
 
 > Returns
@@ -435,6 +434,47 @@ cfg = pyrallis.load(TrainConfig, open('/configs/train_config.yaml','r'))
 print('Loaded config has {cfg.workers} workers')
 ```
 
+### pyrallis.set_config_type
+```python
+def set_config_type(type_val: Union[ConfigType, str])
+```
+By default, pyrallis uses `yaml` for parsing string and files and this is its recommended format. However, pyrallis also supports `json` and `toml`. When using `pyrallis.set_config_type` the global context of pyrallis will change so that the matching configuration format will be used for  `pyrallis.parse`, `pyrallis.dump` and `pyrallis.load`.
+
+To change the configuration type for a specific context use the  `with` context
+
+```python
+with pyrallis.config_type('json'):
+    pyrallis.dump(cfg)
+```
+
+!!! info
+
+    Note that the `pyrallis.parse` function is also dependent on the configuration format as strings from cmd are first parsed based on the current configuration format. This ensures a unified behavior when parsing from files and cmd arguments.
+
+> Parameters
+
+* **type_val** - A string representing the desired format (`#!python "json", "yaml", "toml"`) or the matching enum value (`#!python pyrallis.ConfigType.YAML`)
+
+
+> Example
+
+```python
+import pyrallis
+pyrallis.set_config_type('json')
+
+@dataclass
+class TrainConfig:
+    """ Training config for Machine Learning """
+    workers: int = 8 # The number of workers for training
+    exp_name: str = 'default_exp' # The experiment name
+
+@pyrallis.wrap()
+def main(cfg: TrainConfig):
+    pyrallis.dump(cfg)
+    
+    with pyrallis.config_type('yaml'):
+        pyrallis.dump(cfg)
+```
 
 ## Helper Functions
 ### pyrallis.field

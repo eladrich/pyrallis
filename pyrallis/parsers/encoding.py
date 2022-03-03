@@ -18,10 +18,6 @@ from logging import getLogger
 from os import PathLike
 from typing import Any, Dict, Hashable, TypeVar
 
-import yaml
-
-from pyrallis import utils
-
 logger = getLogger(__name__)
 
 
@@ -116,16 +112,4 @@ encode.register(PathLike, lambda x: x.__fspath__())
 
 encode.register(Namespace, lambda x: encode(vars(x)))
 
-Dataclass = TypeVar("Dataclass")
 
-
-def dump(config: Dataclass, stream=None, omit_defaults: bool = False, **kwargs):
-    """
-    Dump the config file to yaml.
-    optionally omit any value that still has a default value
-    """
-    config_dict = encode(config)
-    if omit_defaults:
-        defaults_dict = encode(utils.get_defaults_dict(config))
-        config_dict = utils.remove_matching(config_dict, defaults_dict)
-    return yaml.dump(config_dict, stream, **kwargs)

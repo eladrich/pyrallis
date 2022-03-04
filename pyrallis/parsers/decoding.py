@@ -7,6 +7,7 @@ from functools import partial
 from logging import getLogger
 from typing import TypeVar, Any, Dict, Type, Callable, Optional, Union, List, Tuple, Set
 
+from pyrallis.parsers.registry_utils import RegistryFunc, withregistry
 from pyrallis.utils import (
     get_type_arguments,
     is_dict,
@@ -17,9 +18,7 @@ from pyrallis.utils import (
     is_enum,
     ParsingError,
     format_error,
-    has_generic_arg,
-    withregistry,
-    RegistryFunc
+    has_generic_arg
 )
 
 logger = getLogger(__name__)
@@ -120,7 +119,8 @@ def get_decoding_fn(cls: Type[T]) -> Callable[[Any], T]:
     # Start by trying the dispatch mechanism
     cached_func: RegistryFunc = decode.dispatch(cls)
     if cached_func is not None:
-        if cached_func.pass_cls:
+        # If supports subclasses, pass the actual type
+        if cached_func.with_subclasses:
             return partial(cached_func.func, cls)
         else:
             return cached_func.func

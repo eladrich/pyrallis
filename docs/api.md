@@ -176,19 +176,20 @@ Where `#!python pyrallis.decode(TrainConfig, d)` will generate the matching data
 #### pyrallis.decode.register
 
 ```python
-def register(cls, func)
+def register(cls, func, with_subclasses=False)
 ```
 Pyrallis can decode many different types, but there's still a chance you might want to a type that isn't already built-in into pyrallis. This can be easily done using the register mechanism.
 
-??? "The @singledispatch wrapper"
+??? "The @withregistry wrapper"
 
-    The register method is a result of using the @singledispatch wrapper over the pyrallis.decode function, allowing to override it with new decoders.
+    The register method is a result of using the @withregistry wrapper over the pyrallis.decode function, a variant for pyrallis of the @singledispatch that only creates a registry and does not override the default entrypoint.
 
 
 > Parameters
 
 * **cls** - The type to register
 * **func** - The decoding function to register
+* **with_subclasses** - Whether to also register the function for the `cls` subclasses. If True, `func` will also expect the type parameter.
 
 > Returns
 
@@ -211,6 +212,14 @@ The register function can also be used as a wrapper
 def decode_array(x):
     return np.asarray(x)
 ```
+
+For inherited types one can either register it directly, or register a parent class
+```python
+pyrallis.decode.register(SomeClass, lambda x: SomeClass(x))
+# or
+pyrallis.decode.register(BaseClass, lambda t, x: t(x), with_subclasses=True)
+```
+Where `t` would be some subclass of `BaseClass`.
 
 ### pyrallis.encode
 ```python

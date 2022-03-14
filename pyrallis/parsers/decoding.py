@@ -2,11 +2,12 @@
 """
 from collections import OrderedDict
 from dataclasses import Field, MISSING, fields, is_dataclass
-from functools import lru_cache, singledispatch
+from functools import lru_cache
 from functools import partial
 from logging import getLogger
 from typing import TypeVar, Any, Dict, Type, Callable, Optional, Union, List, Tuple, Set
 
+from pyrallis.parsers.registry_utils import RegistryFunc, withregistry
 from pyrallis.utils import (
     get_type_arguments,
     is_dict,
@@ -28,9 +29,9 @@ V = TypeVar("V")
 Dataclass = TypeVar("Dataclass")
 
 
-@singledispatch
-def decode(t: Type[T], raw_value: Any) -> T:
-    return get_decoding_fn(t)(raw_value)
+@withregistry
+def decode(cls: Type[T], raw_value: Any) -> T:
+    return get_decoding_fn(cls)(raw_value)
 
 
 # Dictionary mapping from types/type annotations to their decoding functions.
@@ -103,7 +104,7 @@ def decode_field(field: Field, raw_value: Any) -> Any:
 
 
 @lru_cache(maxsize=100)
-def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
+def get_decoding_fn(cls: Type[T]) -> Callable[[Any], T]:
     """Fetches/Creates a decoding function for the given type annotation.
 
     This decoding function can then be used to create an instance of the type
@@ -115,41 +116,46 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
     wasteful calls to the function. This makes this process pretty efficient.
 
     """
-    if t in decode.registry:
-        # The type has a dedicated decoding function.
-        return decode.dispatch(t)  # This returns the singledispatch function
+    # Start by trying the dispatch mechanism
+    cached_func: RegistryFunc = decode.dispatch(cls)
+    if cached_func is not None:
+        # If supports subclasses, pass the actual type
+        if cached_func.include_subclasses:
+            return partial(cached_func.func, cls)
+        else:
+            return cached_func.func
 
-    elif is_dataclass(t):
-        return partial(decode_dataclass, t)
+    elif is_dataclass(cls):
+        return partial(decode_dataclass, cls)
 
-    elif t is Any:
-        logger.debug(f"Decoding an Any type: {t}")
+    elif cls is Any:
+        logger.debug(f"Decoding an Any type: {cls}")
         return no_op
 
-    elif is_dict(t):
-        logger.debug(f"Decoding a Dict field: {t}")
-        args = get_type_arguments(t)
+    elif is_dict(cls):
+        logger.debug(f"Decoding a Dict field: {cls}")
+        args = get_type_arguments(cls)
         if args is None or len(args) != 2 or has_generic_arg(args):
             args = (Any, Any)
         return decode_dict(*args)
 
-    elif is_set(t):
-        logger.debug(f"Decoding a Set field: {t}")
-        args = get_type_arguments(t)
+    elif is_set(cls):
+        logger.debug(f"Decoding a Set field: {cls}")
+        args = get_type_arguments(cls)
         if args is None or len(args) != 1 or has_generic_arg(args):
             args = (Any,)
         return decode_set(args[0])
 
-    elif is_tuple(t):
-        logger.debug(f"Decoding a Tuple field: {t}")
-        args = get_type_arguments(t)
+    elif is_tuple(cls):
+        logger.debug(f"Decoding a Tuple field: {cls}")
+        args = get_type_arguments(cls)
         if args is None:
             args = []
         return decode_tuple(*args)
 
-    elif is_list(t):  # NOTE: Looks like can't be written with a dictionary
-        logger.debug(f"Decoding a List field: {t}")
-        args = get_type_arguments(t)
+    elif is_list(cls):  # NOTE: Looks like can't be written with a dictionary
+        logger.debug(f"Decoding a List field: {cls}")
+        args = get_type_arguments(cls)
         if args is None or len(args) != 1 or has_generic_arg(args):
             # Using a `List` or `list` annotation, so we don't know what do decode the
             # items into!
@@ -158,23 +164,23 @@ def get_decoding_fn(t: Type[T]) -> Callable[[Any], T]:
 
         return decode_fn
 
-    elif is_union(t):
-        logger.debug(f"Decoding a Union field: {t}")
-        args = get_type_arguments(t)
+    elif is_union(cls):
+        logger.debug(f"Decoding a Union field: {cls}")
+        args = get_type_arguments(cls)
         return decode_union(*args)
 
-    elif is_enum(t):
-        return lambda key: t[key]
+    elif is_enum(cls):
+        return lambda key: cls[key]
 
     import typing_inspect as tpi
 
-    if tpi.is_typevar(t):
-        bound = tpi.get_bound(t)
-        logger.debug(f"Decoding a typevar: {t}, bound type is {bound}.")
+    if tpi.is_typevar(cls):
+        bound = tpi.get_bound(cls)
+        logger.debug(f"Decoding a typevar: {cls}, bound type is {bound}.")
         if bound is not None:
             return get_decoding_fn(bound)
 
-    raise Exception(f"No decoding function for type {t}, consider using pyrallis.decode.register")
+    raise Exception(f"No decoding function for type {cls}, consider using pyrallis.decode.register")
 
     # Alternatively could have tried type as constructor, but could have a surprising behaviour
     # return try_constructor(t)

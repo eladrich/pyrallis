@@ -9,7 +9,7 @@ class RegistryFunc:
     # The function saved in the registry
     func: Callable
     # Whether the function should be registered for subclasses as well
-    with_subclasses: bool
+    include_subclasses: bool
 
 
 def withregistry(base_func):
@@ -34,7 +34,7 @@ def withregistry(base_func):
             else:
                 try:
                     impl: Optional[RegistryFunc] = _find_impl(cls, registry)
-                    if not impl.with_subclasses:
+                    if not impl.include_subclasses:
                         # Do not allow implicit inherited implementation without type
                         impl = None
                 except Exception:
@@ -43,11 +43,11 @@ def withregistry(base_func):
 
         return impl
 
-    def register(cls, func=None, with_subclasses=False):
+    def register(cls, func=None, include_subclasses=False):
         nonlocal cache_token
         if func is None:
             if isinstance(cls, type):
-                return lambda f: register(cls, func=f, with_subclasses=with_subclasses)
+                return lambda f: register(cls, func=f, include_subclasses=include_subclasses)
             ann = getattr(cls, '__annotations__', {})
             if not ann:
                 raise TypeError(
@@ -63,7 +63,7 @@ def withregistry(base_func):
             assert isinstance(cls, type), (
                 f"Invalid annotation for {argname!r}. {cls!r} is not a class."
             )
-        registry[cls] = RegistryFunc(func, with_subclasses)
+        registry[cls] = RegistryFunc(func, include_subclasses)
         if cache_token is None and hasattr(cls, '__abstractmethods__'):
             cache_token = get_cache_token()
         dispatch_cache.clear()

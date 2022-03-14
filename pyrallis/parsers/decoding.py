@@ -120,7 +120,7 @@ def get_decoding_fn(cls: Type[T]) -> Callable[[Any], T]:
     cached_func: RegistryFunc = decode.dispatch(cls)
     if cached_func is not None:
         # If supports subclasses, pass the actual type
-        if cached_func.with_subclasses:
+        if cached_func.include_subclasses:
             return partial(cached_func.func, cls)
         else:
             return cached_func.func

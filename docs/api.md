@@ -176,7 +176,7 @@ Where `#!python pyrallis.decode(TrainConfig, d)` will generate the matching data
 #### pyrallis.decode.register
 
 ```python
-def register(cls, func, with_subclasses=False)
+def register(cls, func, include_subclasses=False)
 ```
 Pyrallis can decode many different types, but there's still a chance you might want to a type that isn't already built-in into pyrallis. This can be easily done using the register mechanism.
 
@@ -189,7 +189,7 @@ Pyrallis can decode many different types, but there's still a chance you might w
 
 * **cls** - The type to register
 * **func** - The decoding function to register
-* **with_subclasses** - Whether to also register the function for the `cls` subclasses. If True, `func` will also expect the type parameter.
+* **include_subclasses** - Whether to also register the function for the `cls` subclasses. If True, `func` will also expect the type parameter.
 
 > Returns
 
@@ -217,7 +217,7 @@ For inherited types one can either register it directly, or register a parent cl
 ```python
 pyrallis.decode.register(SomeClass, lambda x: SomeClass(x))
 # or
-pyrallis.decode.register(BaseClass, lambda t, x: t(x), with_subclasses=True)
+pyrallis.decode.register(BaseClass, lambda t, x: t(x), include_subclasses=True)
 ```
 Where `t` would be some subclass of `BaseClass`.
 

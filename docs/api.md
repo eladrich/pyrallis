@@ -347,7 +347,7 @@ For each standard type values are converted to the type using the type as constr
 
 When using the collection definition from `typing` the inner types will also be checked recursively. For example, one can define a `#!python typing.Tuple[int,float,typing.List[int]]` type and the conversion will be done accordingly.
 
-Reading sequences and dictionaries is done using the `yaml` syntax. Notice that tuples and sets use the same syntax as lists, where the conversion happens after loading the arguments. For dictionaries, the keys must be space seperated so the entire dictionary should be wrapped in string quotation marks.
+Reading sequences and dictionaries is done using the `yaml` syntax. Notice that tuples and sets use the same syntax as lists, where the conversion happens after loading the arguments. For dictionaries, the keys must be space separated so the entire dictionary should be wrapped in string quotation marks.
 
 ```console
 $ python train_model.py --worker_inds=[2,18,42] --worker_names="{2: 'George', 18: 'Ben'}"

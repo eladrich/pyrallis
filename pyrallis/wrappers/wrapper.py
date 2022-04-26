@@ -1,4 +1,4 @@
-"""Abstact Wrapper base-class for the FieldWrapper and DataclassWrapper."""
+"""Abstract Wrapper base-class for the FieldWrapper and DataclassWrapper."""
 
 from abc import ABC, abstractmethod
 from typing import Generic, Optional, List

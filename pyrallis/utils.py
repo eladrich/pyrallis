@@ -90,7 +90,7 @@ def get_item_type(container_type: Type[Container[T]]) -> T:
 
 def _mro(t: Type) -> List[Type]:
     # TODO: This is mostly used in 'is_tuple' and such, and should be replaced with
-    # either the build-in 'get_origin' from typing, or from typing-inspect.
+    # either the built-in 'get_origin' from typing, or from typing-inspect.
     if t is None:
         return []
     if hasattr(t, "__mro__"):
@@ -121,13 +121,13 @@ def is_set(t: Type) -> bool:
 
 
 def is_dataclass_type(t: Type) -> bool:
-    """Returns wether t is a dataclass type or a TypeVar of a dataclass type.
+    """Returns whether t is a dataclass type or a TypeVar of a dataclass type.
 
     Args:
         t (Type): Some type.
 
     Returns:
-        bool: Wether its a dataclass type.
+        bool: Whether its a dataclass type.
     """
     return dataclasses.is_dataclass(t) or (
             tpi.is_typevar(t) and dataclasses.is_dataclass(tpi.get_bound(t))

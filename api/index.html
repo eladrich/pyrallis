@@ -1,0 +1,1029 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../pyrallis_only_logo.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
+    
+    
+      
+        <title>The Pyrallis API - Pyrallis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8c5ef100.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.9647289d.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-pyrallis-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pyrallis" class="md-header__button md-logo" aria-label="Pyrallis" data-md-component="logo">
+      
+  <img src="../pyrallis_only_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pyrallis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              The Pyrallis API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/eladrich/pyrallis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    eladrich/pyrallis
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Welcome to Pyrallis
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../step_by_step/" class="md-tabs__link">
+      Pyrallis Step by Step
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
+      The Pyrallis API
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pyrallis" class="md-nav__button md-logo" aria-label="Pyrallis" data-md-component="logo">
+      
+  <img src="../pyrallis_only_logo.png" alt="logo">
+
+    </a>
+    Pyrallis
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/eladrich/pyrallis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    eladrich/pyrallis
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Welcome to Pyrallis
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step_by_step/" class="md-nav__link">
+        Pyrallis Step by Step
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          The Pyrallis API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        The Pyrallis API
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parsing-interface" class="md-nav__link">
+    Parsing Interface
+  </a>
+  
+    <nav class="md-nav" aria-label="Parsing Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisparse" class="md-nav__link">
+    pyrallis.parse
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyralliswrap" class="md-nav__link">
+    pyrallis.wrap
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-and-registration" class="md-nav__link">
+    Types and Registration
+  </a>
+  
+    <nav class="md-nav" aria-label="Types and Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisdecode" class="md-nav__link">
+    pyrallis.decode
+  </a>
+  
+    <nav class="md-nav" aria-label="pyrallis.decode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisdecoderegister" class="md-nav__link">
+    pyrallis.decode.register
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisencode" class="md-nav__link">
+    pyrallis.encode
+  </a>
+  
+    <nav class="md-nav" aria-label="pyrallis.encode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisencoderegister" class="md-nav__link">
+    pyrallis.encode.register
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-types" class="md-nav__link">
+    Supported Types
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-types" class="md-nav__link">
+    Standard Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-types" class="md-nav__link">
+    Collection Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typing-types" class="md-nav__link">
+    Typing Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-types" class="md-nav__link">
+    Other Types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-files" class="md-nav__link">
+    Working with Files
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisdump" class="md-nav__link">
+    pyrallis.dump
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisload" class="md-nav__link">
+    pyrallis.load
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisset_config_type" class="md-nav__link">
+    pyrallis.set_config_type
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helper-functions" class="md-nav__link">
+    Helper Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Helper Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyrallisfield" class="md-nav__link">
+    pyrallis.field
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/eladrich/pyrallis/edit/master/docs/api.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="the-pyrallis-api">The pyrallis API</h1>
+<p>Pyrallis is designed to have a relatively small API, you can get familiar with it below 📚</p>
+<h2 id="parsing-interface">Parsing Interface</h2>
+<h3 id="pyrallisparse">pyrallis.parse</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">config_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> 
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>          <span class="n">config_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>          <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</code></pre></div>
+Parses the available arguments and return an initialized dataclass of type <code>config_class</code>.</p>
+<p>Each dataclass attribute is mapped to a matching argparse argument, where nested arguments are concatenated with the dot notation. That is, if <code>config_class</code> contains a <code>config_class.compute.workers</code> attribute, the matching argparse argument will simply be <code>--compute.workers=42</code>. The full set of arguments is visible using the <code>--help</code> command.</p>
+<p>Pyrallis also searches for an optional <code>yaml</code> configuration file defined either with the default <code>config_path</code> parameter, or specified from command-line using the dedicated <code>--config_path</code> argument. The configuration file is mapped according to the <code>yaml</code> hierarchy.
+That is, if <code>config_class</code> contains a <code>config_class.compute.workers</code> attribute, the matching <code>yaml</code> argument would be
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">compute</span><span class="p">:</span><span class="w"></span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w"></span>
+</code></pre></div></p>
+<p>The overloading mechanism is defined so that default values can be overridden by <code>yaml</code> values which can be overridden by command-line arguments. The actual dataclass is initialized only once using the final set of arguments.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>config_class (A dataclass class)</strong> - The dataclass that will define the parser</li>
+<li><strong>config_path (str)</strong> - An optional path to a default <code>yaml</code> configuration file. The parser will first load the arguments from there and will override them with command-line arguments.</li>
+<li><strong>args</strong> - The arguments to parse, as in the <code>argparse.ArgumentParser.parse_args()</code> call. If None, parses from command-line</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>An initialized dataclass of type <code>config_class</code>.</p>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<p>A small working example would look like that
+<table class="highlighttable"><tr><th colspan="2" class="filename"><div class="highlight"><span class="filename">train_model.py</span></div></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">pyrallis</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">class</span> <span class="nc">TrainConfig</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="sd">&quot;&quot;&quot; Training config for Machine Learning &quot;&quot;&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default_exp&#39;</span> <span class="c1"># The experiment name</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">pyrallis</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">config_class</span><span class="o">=</span><span class="n">TrainConfig</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Training </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">exp_name</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">workers</span><span class="si">}</span><span class="s1"> workers...&#39;</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+The arguments can then be specified using command-line arguments, a <code>yaml</code> configuration file, or both</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>python train_model.py --config_path<span class="o">=</span>some_config.yaml --exp_name<span class="o">=</span>my_first_exp
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">Training my_first_exp with 42 workers...</span>
+</code></pre></div>
+Not sure what arguments are available? pyrallis also automagically generates the <code>--help</code> command 🪄
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>python train_model.py --help
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">usage: train_model.py [-h] [--config_path str] [--workers int] [--exp_name str]</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="go">optional arguments:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="go">  -h, --help      show this help message and exit</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="go">  --config_path str    Path for a config file to parse with pyrallis (default:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="go">                  None)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="go">TrainConfig [&#39;options&#39;]:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="go">   Training config for Machine Learning</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="go">  --workers int   The number of workers for training (default: 8)</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="go">  --exp_name str  The experiment name (default: default_exp)</span>
+</code></pre></div></p>
+<h3 id="pyralliswrap">pyrallis.wrap</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">config_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+Inspired by Hydra, Pyrallis also offers an alternative decorator that wraps your main function and automatically initializes a configuration class to match your function signature.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>config_path (str)</strong> - An optional path to a default <code>yaml</code> configuration file. The parser will first load the arguments from there and will override them with command-line arguments.</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>A wrapped function, where the first argument is implicitly initialized with pyrallis.</p>
+<blockquote>
+<p>Example</p>
+</blockquote>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">@pyrallis.wrap</label><label for="__tabbed_1_2">pyrallis.parse</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nd">@pyrallis</span><span class="o">.</span><span class="n">wrap</span><span class="p">()</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">TrainConfig</span><span class="p">):</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Training </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">exp_name</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">workers</span><span class="si">}</span><span class="s1"> workers...&#39;</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">main</span><span class="p">()</span> <span class="c1"># Notice that cfg is not explicitly passed to main!</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">pyrallis</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">config_class</span><span class="o">=</span><span class="n">TrainConfig</span><span class="p">)</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Training </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">exp_name</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">workers</span><span class="si">}</span><span class="s1"> workers...&#39;</span><span class="p">)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="types-and-registration">Types and Registration</h2>
+<h3 id="pyrallisdecode">pyrallis.decode</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">raw_value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</code></pre></div>
+Parse a given raw value and produce the corresponding type. This function can parse any of the supported pyrallis types, from standard types to enums and dataclasses.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>t (Type[T])</strong> - The type to parse into</li>
+<li><strong>raw_value</strong> - The input to parse</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>A value of type <code>T</code> constructed from <code>raw_value</code></p>
+<blockquote>
+<p>Examples:</p>
+</blockquote>
+<p>Pyrallis can decode a variety of different types</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="s1">&#39;0.7&#39;</span><span class="p">)</span> <span class="c1"># Output: 0.7</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],[</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">])</span> <span class="c1"># Output: [6, 3, 4]</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span><span class="s1">&#39;2.3&#39;</span><span class="p">)</span> <span class="c1"># Output: &#39;2.3&#39;</span>
+</code></pre></div>
+<p>The <code>pyrallis.decode</code> function is also used to parse dataclasses from dictionaires.
+The dictionary is assumed to have a structure that matches the dataclass, with possibly missing values. 
+For example, assuming the following dataclass
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">class</span> <span class="nc">ComputeConfig</span><span class="p">:</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="sd">&quot;&quot;&quot; Config for training resources &quot;&quot;&quot;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">eval_workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">class</span> <span class="nc">TrainConfig</span><span class="p">:</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">compute</span><span class="p">:</span> <span class="n">ComputeConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">ComputeConfig</span><span class="p">)</span>
+</code></pre></div></p>
+<p>A valid dictionary can be
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="s1">&#39;compute&#39;</span><span class="p">:</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>     <span class="p">{</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>         <span class="s1">&#39;workers&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>         <span class="s1">&#39;eval_workers&#39;</span><span class="p">:</span> <span class="s1">&#39;16&#39;</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>     <span class="p">}</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">}</span>
+</code></pre></div></p>
+<p>Where <code class="highlight"><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">TrainConfig</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span></code> will generate the matching dataclass. The values will be fed into the dataclass constructor. Values can be missing if they have a default value, otherwise pyrallis will just fail to construct the class.</p>
+<h4 id="pyrallisdecoderegister">pyrallis.decode.register</h4>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">include_subclasses</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+Pyrallis can decode many different types, but there's still a chance you might want to a type that isn't already built-in into pyrallis. This can be easily done using the register mechanism.</p>
+<details>
+<summary>The @withregistry wrapper</summary>
+<p>The register method is a result of using the @withregistry wrapper over the pyrallis.decode function, a variant for pyrallis of the @singledispatch that only creates a registry and does not override the default entrypoint.</p>
+</details>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>cls</strong> - The type to register</li>
+<li><strong>func</strong> - The decoding function to register</li>
+<li><strong>include_subclasses</strong> - Whether to also register the function for the <code>cls</code> subclasses. If True, <code>func</code> will also expect the type parameter.</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>Registers the function, no return value.</p>
+<blockquote>
+<p>Examples:</p>
+</blockquote>
+<p>Say we want to add an option to decode a numpy array into pyrallis.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">import</span> <span class="nn">pyrallis</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">)</span>
+</code></pre></div>
+<p>The register function can also be used as a wrapper
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">def</span> <span class="nf">decode_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></p>
+<p>For inherited types one can either register it directly, or register a parent class
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SomeClass</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">SomeClass</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># or</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">decode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">include_subclasses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+Where <code>t</code> would be some subclass of <code>BaseClass</code>.</p>
+<h3 id="pyrallisencode">pyrallis.encode</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</code></pre></div>
+Parse a given object into a yaml compatible object that can be serialized.  </p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>obj</strong> - The object to encode</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>A yaml-compatible object. For dataclasses, a matching dictionary will be generated</p>
+<blockquote>
+<p>Examples:</p>
+</blockquote>
+<p>For many types the encode function will simply return the same object, as they are already yaml-compatible.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="mf">0.7</span><span class="p">)</span> <span class="c1"># Output: 0.7</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">encode</span><span class="p">([</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">])</span> <span class="c1"># Output: [&#39;6&#39;,&#39;3&#39;,&#39;4&#39;]</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">encode</span><span class="p">((</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">))</span> <span class="c1"># Output: [0.2, 0.3]</span>
+</code></pre></div>
+<p>Most of the logic in <code>pyrallis.encode</code> is related to encoding of dataclasses. A given dataclass will be encoded to a dictionary representing the same hierarchy and values. 
+For example, assuming the following dataclass and its instance
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">class</span> <span class="nc">ComputeConfig</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="sd">&quot;&quot;&quot; Config for training resources &quot;&quot;&quot;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>    <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">eval_workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="k">class</span> <span class="nc">TrainConfig</span><span class="p">:</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>    <span class="n">compute</span><span class="p">:</span> <span class="n">ComputeConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">ComputeConfig</span><span class="p">)</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">TrainConfig</span><span class="p">(</span><span class="n">compute</span><span class="o">=</span><span class="n">ComputeConfig</span><span class="p">(</span><span class="n">workers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eval_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">))</span>
+</code></pre></div></p>
+<p>The output of <code>pyrallis.encode(cfg)</code> would be
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="s1">&#39;compute&#39;</span><span class="p">:</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>     <span class="p">{</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>         <span class="s1">&#39;workers&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>         <span class="s1">&#39;eval_workers&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>     <span class="p">}</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p">}</span>
+</code></pre></div></p>
+<h4 id="pyrallisencoderegister">pyrallis.encode.register</h4>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</code></pre></div>
+If an object you want to encode is not serializable, you can easily register a function that encodes it into a supported type using the <code>register</code> mechanism.</p>
+<details>
+<summary>The @singledispatch wrapper</summary>
+<p>The register method is a result of using the @singledispatch wrapper over the pyrallis.encode function, allowing to override it with new encoders.</p>
+</details>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>cls</strong> - The type to register</li>
+<li><strong>func</strong> - The decoding function to register</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>Registers the function, no return value.</p>
+<blockquote>
+<p>Examples:</p>
+</blockquote>
+<p>Say we want to add an option to encode a numpy array into pyrallis.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kn">import</span> <span class="nn">pyrallis</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">encode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</code></pre></div>
+<p>The register function can also be used as a wrapper
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nd">@pyrallis</span><span class="o">.</span><span class="n">encode</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">def</span> <span class="nf">encode_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</code></pre></div></p>
+<h3 id="supported-types">Supported Types</h3>
+<p>pyrallis comes with many supported types, as detailed below. Additional types can be added using the <code>pyrallis.decode.register</code> and <code>pyrallis.encode.register</code> functionality.</p>
+<h4 id="standard-types">Standard Types</h4>
+<p><code>str</code> </p>
+<p><code>float</code></p>
+<p><code>int</code></p>
+<p><code>bool</code></p>
+<p><code>bytes</code></p>
+<p>For each standard type values are converted to the type using the type as constructor (i.e., <code class="highlight"><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;1.3&#39;</span><span class="p">)</span></code>)</p>
+<h4 id="collection-types">Collection Types</h4>
+<p><code>tuple</code>  (or <code>typing.Tuple</code>)</p>
+<p><code>list</code>  (or <code>typing.List</code>)</p>
+<p><code>dict</code> (or <code>typing.Dict</code>)</p>
+<p><code>set</code>  (or <code>typing.Set</code>)</p>
+<p>When using the collection definition from <code>typing</code> the inner types will also be checked recursively. For example, one can define a <code class="highlight"><span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">,</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span></code> type and the conversion will be done accordingly.</p>
+<p>Reading sequences and dictionaries is done using the <code>yaml</code> syntax. Notice that tuples and sets use the same syntax as lists, where the conversion happens after loading the arguments. For dictionaries, the keys must be space separated so the entire dictionary should be wrapped in string quotation marks.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="gp">$ </span>python train_model.py --worker_inds<span class="o">=[</span><span class="m">2</span>,18,42<span class="o">]</span> --worker_names<span class="o">=</span><span class="s2">&quot;{2: &#39;George&#39;, 18: &#39;Ben&#39;}&quot;</span>
+</code></pre></div>
+<h4 id="typing-types">Typing Types</h4>
+<p><code>typing.Any</code></p>
+<p>for <code>typing.Any</code> no explicit conversion is applied, this means only the base conversion done when loading a yaml file/string is applied.</p>
+<p><code>typing.Optional</code></p>
+<p>Using <code>typing.Optional</code> you can pass <code>None</code> values to an argument. Following the <code>yaml</code> syntax this is specified using the <code>null</code> keyword.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="gp">$ </span>python train_model.py --worker_names<span class="o">=</span>null
+</code></pre></div>
+<p><code>typing.Union</code></p>
+<p>For unions <code>pyrallis</code> sequentially tries to apply conversion to each type and sticks with the first one that works. This means there could be cases where the order of values in the Union affects the end result (i.e. <code class="highlight"><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></code>).</p>
+<h4 id="other-types">Other Types</h4>
+<p><code>Enum</code></p>
+<p>Enums can be really useful for configurations, <code>pyrallis</code> inherently supports the <code>enum.Enum</code> class and parses enums using the matching keyword values.</p>
+<p><code>pathlib.Path</code></p>
+<p>The <code>pathlib.Path</code> type is useful for path manipulation, and hence a useful type for our configuration dataclasses. <code>pyrallis</code> inherently supports the class and can convert an <code>str</code> to <code>Path</code> and back, according to the type hints.</p>
+<p><code>dataclasses</code>
+<code>Dataclasses</code> are also supported by <code>pyrallis.decode</code> and <code>pyrallis.encode</code>. In fact, this is how pyrallis operates behind the scenes.</p>
+<h2 id="working-with-files">Working with Files</h2>
+<h3 id="pyrallisdump">pyrallis.dump</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Dataclass</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">omit_defaults</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+Serialize a configuration dataclass into a file stream. If stream is None, return the produced string instead. Additional arguments are passed along to the <code>dump</code> function of the current configuration format.
+In practice this function uses pyrallis.encode to create a standard dictionary from the dataclass which is then passed along to the configuration parser.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>config (dataclass)</strong> - The dataclass to serialize</li>
+<li><strong>omit_defaults</strong> - If true, does not dump values that are equal to the default Dataclass values.</li>
+<li><strong>stream</strong> - An output stream to dump into. If None, the produced string is returned.</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>If no stream is provided, returns the produced string. Otherwise, no return value.</p>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nd">@pyrallis</span><span class="o">.</span><span class="n">wrap</span><span class="p">()</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">TrainConfig</span><span class="p">):</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The generated config is:&#39;</span><span class="p">)</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">pyrallis</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">))</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="c1"># Saving to file</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    <span class="n">pyrallis</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/configs/train_config.yaml&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="pyrallisload">pyrallis.load</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Dataclass</span><span class="p">],</span> <span class="n">stream</span><span class="p">):</span>
+</code></pre></div>
+Parse the document from the stream and produce the corresponding dataclass
+In practice this function first loads a dictionary from the stream and then uses <code>pyrallis.decode</code> to generate a valid dataclass from it.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>t (Type[dataclass])</strong> - The dataclass type to load into</li>
+<li><strong>stream</strong> - The input stream to load</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>A dataclass instance from type <code>t</code>.</p>
+<blockquote>
+<p>Example:</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">pyrallis</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">TrainConfig</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/configs/train_config.yaml&#39;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">))</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded config has </span><span class="si">{cfg.workers}</span><span class="s1"> workers&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="pyrallisset_config_type">pyrallis.set_config_type</h3>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">def</span> <span class="nf">set_config_type</span><span class="p">(</span><span class="n">type_val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConfigType</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span>
+</code></pre></div>
+By default, pyrallis uses <code>yaml</code> for parsing string and files and this is its recommended format. However, pyrallis also supports <code>json</code> and <code>toml</code>. When using <code>pyrallis.set_config_type</code> the global context of pyrallis will change so that the matching configuration format will be used for  <code>pyrallis.parse</code>, <code>pyrallis.dump</code> and <code>pyrallis.load</code>.</p>
+<p>To change the configuration type for a specific context use the  <code>with</code> context</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="k">with</span> <span class="n">pyrallis</span><span class="o">.</span><span class="n">config_type</span><span class="p">(</span><span class="s1">&#39;json&#39;</span><span class="p">):</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>    <span class="n">pyrallis</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Note that the <code>pyrallis.parse</code> function is also dependent on the configuration format as strings from cmd are first parsed based on the current configuration format. This ensures a unified behavior when parsing from files and cmd arguments.</p>
+</div>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<ul>
+<li><strong>type_val</strong> - A string representing the desired format (<code class="highlight"><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;toml&quot;</span></code>) or the matching enum value (<code class="highlight"><span class="n">pyrallis</span><span class="o">.</span><span class="n">ConfigType</span><span class="o">.</span><span class="n">YAML</span></code>)</li>
+</ul>
+<blockquote>
+<p>Example</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">import</span> <span class="nn">pyrallis</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="n">pyrallis</span><span class="o">.</span><span class="n">set_config_type</span><span class="p">(</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="k">class</span> <span class="nc">TrainConfig</span><span class="p">:</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>    <span class="sd">&quot;&quot;&quot; Training config for Machine Learning &quot;&quot;&quot;</span>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># The number of workers for training</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>    <span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default_exp&#39;</span> <span class="c1"># The experiment name</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="nd">@pyrallis</span><span class="o">.</span><span class="n">wrap</span><span class="p">()</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">TrainConfig</span><span class="p">):</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>    <span class="n">pyrallis</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>    <span class="k">with</span> <span class="n">pyrallis</span><span class="o">.</span><span class="n">config_type</span><span class="p">(</span><span class="s1">&#39;yaml&#39;</span><span class="p">):</span>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>        <span class="n">pyrallis</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="helper-functions">Helper Functions</h2>
+<h3 id="pyrallisfield">pyrallis.field</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">MISSING</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">MISSING</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>          <span class="nb">hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compare</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_mutable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Extends the standard dataclass.field with an additional <code>is_mutable</code> flag. If this flag is set to <code>True</code> the default value is considered as mutable and a matching default_factory is generated instead.</p>
+<blockquote>
+<p>Parameters</p>
+</blockquote>
+<p>All the standard dataclasses.field parameters with the additional</p>
+<ul>
+<li><strong>is_mutable</strong> - Whether the specified default value is mutable</li>
+</ul>
+<blockquote>
+<p>Returns</p>
+</blockquote>
+<p>An object to identify dataclass fields, same as in dataclasses.field</p>
+<blockquote>
+<p>Example</p>
+</blockquote>
+<p>say we try to code the following dataclass
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="k">class</span> <span class="nc">OptimConfig</span><span class="p">:</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>    <span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>    <span class="c1"># Or the more explicit version</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>    <span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+</code></pre></div>
+As <code>[]</code> is mutable we would actually initialize every instance of this dataclass with the same list instance, and thus is not allowed. Instead <code>dataclasses</code> would direct you the default_factory function, which calls a factory function for generating the field in every new instance of your dataclass.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+</code></pre></div>
+<p>Now, this works great for empty collections, but what would be the alternative for
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</code></pre></div>
+Well, you would have to create a dedicated factory function that regenerates the object, for example
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span> <span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</code></pre></div>
+Kind of annoying and could be confusing for a new guest reading your code <img alt="😕" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f615.svg" title=":confused:" />. This is where <code>pyrallis.field</code> can be helpful
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="kn">from</span> <span class="nn">pyrallis</span> <span class="kn">import</span> <span class="n">field</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">worker_inds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">is_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+The <code>pyrallis.field</code> behaves like the regular <code>dataclasses.field</code> with an additional <code>is_mutable</code> flag. When toggled, the <code>default_factory</code> is created automatically, offering the same functionally with a more reader-friendly syntax.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../step_by_step/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Pyrallis Step by Step" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Pyrallis Step by Step
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "toc.integrate", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.748e2769.min.js"></script>
+      
+    
+  </body>
+</html>

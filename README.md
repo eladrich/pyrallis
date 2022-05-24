@@ -366,7 +366,7 @@ python my_app.py --compute.worker_inds 0 2 3
 
 We decided to use the same syntax as in the `yaml` files to avoid confusion when loading from multiple sources.
 
-Not a `yaml` fun? `pyrallis` also supports `json` and `toml` formats using `pyrallis.set_config_type('json')` or `with pyrallis.config_type('json'):`
+Not a `yaml` fan? `pyrallis` also supports `json` and `toml` formats using `pyrallis.set_config_type('json')` or `with pyrallis.config_type('json'):`
 
 
 

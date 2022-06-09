@@ -6,9 +6,10 @@ import dataclasses
 import inspect
 import sys
 import warnings
-from argparse import HelpFormatter, Namespace
+from argparse import HelpFormatter, Namespace, _HelpAction
 from collections import defaultdict
 from functools import wraps
+from itertools import chain
 from logging import getLogger
 from pathlib import Path
 from typing import Dict, List, Sequence, Text, Type, Union, TypeVar, Generic, Optional
@@ -97,7 +98,12 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
             # make sure that args are mutable
             args = list(args)
 
-        if '--help' not in args:
+        help_args = set(
+            chain.from_iterable(
+                [action.option_strings for action in self._actions if isinstance(action, _HelpAction)]
+            )
+        )
+        if all(help_arg not in args for help_arg in help_args):
             for action in self._actions:
                 # TODO: Find a better way to do that?
                 action.default = argparse.SUPPRESS  # To avoid setting of defaults in actual run

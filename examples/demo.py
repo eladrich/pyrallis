@@ -12,7 +12,7 @@ import pyrallis
 class ComputeConfig:
     """ Config for training resources """
     # The number of workers for training
-    workers: int = field(default=8, metadata={"aliases": ["--num-workers", "-#"]})
+    workers: int = field(default=8, metadata={"alias": ["--num-workers", "-#"]})
     # The number of workers for training
     eval_workers: Optional[int] = field(default=None)
 

@@ -135,6 +135,9 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         """
         return self.field.metadata.get("custom_args", {})
 
+    @property
+    def alias(self) -> List[str]:
+        return self.field.metadata.get("alias", [])
 
     @property
     def option_strings(self) -> List[str]:
@@ -164,8 +167,9 @@ class FieldWrapper(Wrapper[dataclasses.Field]):
         options.append(self.dest)
 
         # remove duplicates by creating a set.
-        option_strings = set(f"{dash}{option}" for dash, option in zip(dashes, options))
-        return list(sorted(option_strings, key=len))
+        option_strings = list(set(f"{dash}{option}" for dash, option in zip(dashes, options)))
+        option_strings.extend(list(set(self.alias)))
+        return option_strings
 
     @property
     def dest(self) -> str:

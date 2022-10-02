@@ -1,7 +1,7 @@
 import contextlib
 from typing import Union
 
-from pyrallis.parsers.config_parsers import ParserEnum, YAMLParser, JSONParser, JSONETParser, TOMLParser
+from pyrallis.parsers.config_parsers import ParserEnum, YAMLParser, JSONParser, JSONNETParser, TOMLParser
 
 
 class ConfigType(ParserEnum):

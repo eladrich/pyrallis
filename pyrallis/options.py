@@ -7,7 +7,7 @@ from pyrallis.parsers.config_parsers import ParserEnum, YAMLParser, JSONParser, 
 class ConfigType(ParserEnum):
     YAML = YAMLParser
     JSON = JSONParser
-    JSONNET = JSONETParser
+    JSONNET = JSONNETParser
     TOML = TOMLParser
 
 

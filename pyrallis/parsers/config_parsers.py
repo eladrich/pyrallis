@@ -69,6 +69,24 @@ class JSONParser(Parser):
             return json.dump(d, stream, **kwargs)
 
 
+class JSONNETParser(JSONParser):
+
+    @staticmethod
+    def parse_string(s):
+        import json
+        import _jsonnet
+        try:
+            s = _jsonnet.evaluate_snippet("snippet", s)  # "snippet" is a dummy filename parameter
+            return json.loads(s)
+        except json.decoder.JSONDecodeError:
+            return s  # No parsing to be done, simply return value
+
+    @staticmethod
+    def load_config(stream):
+        s = stream.read()  # Jsonnet doesn't provide stream API
+        return JSONNETParser.parse_string(s)
+
+
 class TOMLParser(Parser):
 
     @staticmethod

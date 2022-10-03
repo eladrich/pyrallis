@@ -30,7 +30,7 @@ def test_encode_something(simple_attribute):
     assert pyrallis.decode(SomeClass, pyrallis.encode(b)) == b
 
 
-@parametrize('config_type', ['', 'yaml', 'json', 'toml'])
+@parametrize('config_type', ['', 'yaml', 'json', 'jsonnet', 'toml'])
 def test_dump_load(simple_attribute, config_type, tmp_path):
     some_type, _, expected_value = simple_attribute
 

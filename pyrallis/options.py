@@ -1,12 +1,13 @@
 import contextlib
 from typing import Union
 
-from pyrallis.parsers.config_parsers import ParserEnum, YAMLParser, JSONParser, TOMLParser
+from pyrallis.parsers.config_parsers import ParserEnum, YAMLParser, JSONParser, JSONNETParser, TOMLParser
 
 
 class ConfigType(ParserEnum):
     YAML = YAMLParser
     JSON = JSONParser
+    JSONNET = JSONNETParser
     TOML = TOMLParser
 
 

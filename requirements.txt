@@ -1,2 +1,2 @@
-typing_inspect
+typing-inspect
 dataclasses; python_version<"3.7"

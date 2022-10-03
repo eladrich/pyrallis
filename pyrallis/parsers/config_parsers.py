@@ -69,7 +69,7 @@ class JSONParser(Parser):
             return json.dump(d, stream, **kwargs)
 
 
-class JSONNETParser(Parser):
+class JSONNETParser(JSONParser):
 
     @staticmethod
     def parse_string(s):
@@ -84,7 +84,7 @@ class JSONNETParser(Parser):
     @staticmethod
     def load_config(stream):
         s = stream.read()  # Jsonnet doesn't provide stream API
-        return self.parse_string(s)
+        return JSONNETParser.parse_string(s)
 
 
 class TOMLParser(Parser):

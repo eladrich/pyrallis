@@ -34,5 +34,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
+    install_requires=[
+        "typing_inspect",
+        "dataclasses;python_version<'3.7'",
+        'pyyaml'
+    ],
     setup_requires=["pre-commit"],
 )

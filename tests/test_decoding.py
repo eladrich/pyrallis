@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
@@ -5,7 +6,10 @@ import yaml
 import json
 
 from pyrallis.utils import PyrallisException
-from .testutils import *
+from tests.testutils import *
+
+
+IS_POSIX = (os.name == 'posix')
 
 
 class Color(Enum):
@@ -49,7 +53,7 @@ def test_dump_load(simple_attribute, config_type, tmp_path):
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
 
-    arguments = shlex.split(f"--config_path {tmp_file}")
+    arguments = shlex.split(f"--config_path {tmp_file}", posix=IS_POSIX)
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 
@@ -98,7 +102,7 @@ def test_dump_load_dicts(simple_attribute, tmp_path):
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
-    arguments = shlex.split(f"--config_path {tmp_file}")
+    arguments = shlex.split(f"--config_path {tmp_file}", posix=IS_POSIX)
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 

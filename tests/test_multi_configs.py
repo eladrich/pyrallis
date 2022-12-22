@@ -1,12 +1,13 @@
+import json
+import warnings
 from dataclasses import dataclass
 from enum import Enum, auto
 
 import yaml
-import json
 
 from pyrallis.utils import PyrallisException
-from .testutils import *
 
+from .testutils import *
 
 # List of simple attributes to use in tests:
 two_arguments: List[Tuple[Type, Any, Any]] = [
@@ -71,7 +72,8 @@ def test_multi_load(two_attribute, tmp_path):
 
     # mixed command line and python arguments
     arguments = shlex.split(f"--config_path {tmp_file_b}")
-    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_a, args=arguments)
+    new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_a, args=arguments,
+                           commandline_overwrites=False)
     assert new_b == b
 
     # a at second place overrides b for some value only
@@ -79,7 +81,7 @@ def test_multi_load(two_attribute, tmp_path):
     new_c = pyrallis.parse(config_class=SomeClass,
                            config_path=[tmp_file_b, tmp_file_a],
                            args="",
-                               )
+                           )
     assert new_c == c
 
     # both as commandline arguments
@@ -90,7 +92,8 @@ def test_multi_load(two_attribute, tmp_path):
 
     # mixed command line and python arguments
     arguments = shlex.split(f"--config_path {tmp_file_a}")
-    new_c = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_b, args=arguments)
+    new_c = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_b, args=arguments,
+                           commandline_overwrites=False)
     assert new_c == c
 
     # merge files with mutually exclusive parameters
@@ -98,5 +101,18 @@ def test_multi_load(two_attribute, tmp_path):
     new_c = pyrallis.parse(config_class=SomeClass,
                            config_path=[tmp_file_a, tmp_file_d],
                            args="",
-                               )
+                           )
     assert new_c == c
+
+    # commandline_overwrites = True
+    # mixed command line and python arguments with override
+    arguments = shlex.split(f"--config_path {tmp_file_b}")
+    with pytest.warns(UserWarning):
+        new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_a, args=arguments, commandline_overwrites=True)
+    assert new_b == b
+
+    # mixed command line and python arguments with override
+    arguments = shlex.split(f"--config_path {tmp_file_a}")
+    with pytest.warns(UserWarning):
+        new_a = pyrallis.parse(config_class=SomeClass, config_path=tmp_file_b, args=arguments, commandline_overwrites=True)
+    assert new_a == a

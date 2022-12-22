@@ -28,7 +28,8 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
     def __init__(
             self,
             config_class: Type[T],
-            config_path: Optional[Union[str, List[str]]] = None,
+            config_path: Optional[Union[Path, str, List[Union[str, Path]]]] = None,
+            commandline_overwrites: bool = True,
             formatter_class: Type[HelpFormatter] = SimpleHelpFormatter,
             *args,
             **kwargs,
@@ -43,6 +44,7 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         self._wrappers: List[DataclassWrapper] = []
 
+        self.commandline_overwrites = commandline_overwrites
         if config_path is None:
             self.config_path = []
         elif isinstance(config_path, list):
@@ -126,11 +128,17 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         parsed_arg_values = vars(parsed_args)
 
-        config_path = self.config_path  # always list
+        config_path = self.config_path[:]  # copy, always list
 
         if utils.CONFIG_ARG in parsed_arg_values:
             new_config_path = parsed_arg_values[utils.CONFIG_ARG]
-            config_path.extend(new_config_path)
+            if self.commandline_overwrites and len(config_path) > 0:
+                warnings.warn(
+                    UserWarning(f'Overriding default {config_path} with {new_config_path}')
+                )
+                config_path = new_config_path
+            else:
+                config_path.extend(new_config_path)
             del parsed_arg_values[utils.CONFIG_ARG]
 
         for key in parsed_arg_values:
@@ -152,8 +160,9 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
 
 def parse(config_class: Type[T], config_path: Optional[Union[Path, str]] = None,
-          args: Optional[Sequence[str]] = None) -> T:
-    parser = ArgumentParser(config_class=config_class, config_path=config_path)
+        args: Optional[Sequence[str]] = None, commandline_overwrites: bool=True) -> T:
+    parser = ArgumentParser(config_class=config_class, config_path=config_path,
+                            commandline_overwrites=commandline_overwrites)
     return parser.parse_args(args)
 
 

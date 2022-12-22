@@ -28,7 +28,8 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
     def __init__(
             self,
             config_class: Type[T],
-            config_path: Optional[str] = None,
+            config_path: Optional[Union[Path, str, List[Union[str, Path]]]] = None,
+            commandline_overwrites: bool = True,
             formatter_class: Type[HelpFormatter] = SimpleHelpFormatter,
             *args,
             **kwargs,
@@ -43,11 +44,22 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         self._wrappers: List[DataclassWrapper] = []
 
-        self.config_path = config_path
+        self.commandline_overwrites = commandline_overwrites
+        if config_path is None:
+            self.config_path = []
+        elif isinstance(config_path, list):
+            self.config_path = config_path
+        else:
+            self.config_path = [config_path]
         self.config_class = config_class
 
         self._assert_no_conflicts()
-        self.add_argument(f'--{utils.CONFIG_ARG}', type=str, help='Path for a config file to parse with pyrallis')
+        self.add_argument(
+            f'--{utils.CONFIG_ARG}',
+            type=str,
+            nargs='*',
+            help='Paths for config files to parse with pyrallis, read from left to right',
+            )
         self.set_dataclass(config_class)
 
     def set_dataclass(
@@ -116,22 +128,27 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
         parsed_arg_values = vars(parsed_args)
 
-        for key in parsed_arg_values:
-            parsed_arg_values[key] = cfgparsing.parse_string(parsed_arg_values[key])
-
-        config_path = self.config_path  # Could be NONE
+        config_path = self.config_path[:]  # copy, always list
 
         if utils.CONFIG_ARG in parsed_arg_values:
             new_config_path = parsed_arg_values[utils.CONFIG_ARG]
-            if config_path is not None:
+            if self.commandline_overwrites and len(config_path) > 0:
                 warnings.warn(
                     UserWarning(f'Overriding default {config_path} with {new_config_path}')
                 )
-            config_path = new_config_path
+                config_path = new_config_path
+            else:
+                config_path.extend(new_config_path)
             del parsed_arg_values[utils.CONFIG_ARG]
 
-        if config_path is not None:
-            file_args = cfgparsing.load_config(open(config_path, 'r'))
+        for key in parsed_arg_values:
+            parsed_arg_values[key] = cfgparsing.parse_string(parsed_arg_values[key])
+
+        # values read first will then be used to overwrite values
+        # read during later parses, so reverse the order for standard
+        # left to right parsing
+        for cfg_path in config_path[::-1]:
+            file_args = cfgparsing.load_config(open(cfg_path, 'r'))
             file_args = utils.flatten(file_args, sep='.')
             file_args.update(parsed_arg_values)
             parsed_arg_values = file_args
@@ -143,8 +160,9 @@ class ArgumentParser(Generic[T], argparse.ArgumentParser):
 
 
 def parse(config_class: Type[T], config_path: Optional[Union[Path, str]] = None,
-          args: Optional[Sequence[str]] = None) -> T:
-    parser = ArgumentParser(config_class=config_class, config_path=config_path)
+        args: Optional[Sequence[str]] = None, commandline_overwrites: bool=True) -> T:
+    parser = ArgumentParser(config_class=config_class, config_path=config_path,
+                            commandline_overwrites=commandline_overwrites)
     return parser.parse_args(args)
 
 

@@ -298,6 +298,10 @@ def format_error(e: Exception):
         return f'Exception: {e}'
 
 
+def add_tab_to_new_lines(text: str):
+    return text.replace('\n', '\n\t')
+
+
 def is_generic_arg(arg):
     try:
         return arg.__name__ in ['KT', 'VT', 'T']

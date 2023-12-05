@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 import yaml
 import json
+import toml
 
 from pyrallis.utils import PyrallisException
 from .testutils import *
@@ -49,7 +50,7 @@ def test_dump_load(simple_attribute, config_type, tmp_path):
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
 
-    arguments = shlex.split(f"--config_path {tmp_file}")
+    arguments = ['--config_path', str(tmp_file)]
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 
@@ -98,7 +99,7 @@ def test_dump_load_dicts(simple_attribute, tmp_path):
 
     new_b = pyrallis.parse(config_class=SomeClass, config_path=tmp_file, args="")
     assert new_b == b
-    arguments = shlex.split(f"--config_path {tmp_file}")
+    arguments = ['--config_path', str(tmp_file)]
     new_b = pyrallis.parse(config_class=SomeClass, args=arguments)
     assert new_b == b
 

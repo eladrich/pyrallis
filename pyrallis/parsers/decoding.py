@@ -18,7 +18,8 @@ from pyrallis.utils import (
     is_enum,
     ParsingError,
     format_error,
-    has_generic_arg
+    has_generic_arg,
+    add_tab_to_new_lines
 )
 
 logger = getLogger(__name__)
@@ -195,19 +196,28 @@ def decode_optional(t: Type[T]) -> Callable[[Optional[Any]], Optional[T]]:
     return _decode_optional
 
 
-def try_functions(*funcs: Callable[[Any], T]) -> Callable[[Any], Union[T, Any]]:
+def try_decoding_functions(funcs: List[Callable[[Any], T]],
+                           types: List[T]) -> Callable[[Any], Union[T, Any]]:
     """Tries to use the functions in succession, else returns the same value unchanged."""
 
-    def _try_functions(val: Any) -> Union[T, Any]:
-        for func in funcs:
+    assert len(funcs) == len(types), 'Each decoding function must have a unique type.'
+
+    def _try_decoding_functions(val: Any) -> Union[T, Any]:
+        error_messages: List[str] = []
+        for func, t in zip(funcs, types):
             try:
                 return func(val)
-            except Exception:
+            except Exception as e:
+                error_message = f"-> Class {t.__name__}: {add_tab_to_new_lines(format_error(e))}"
+                error_messages.append(error_message)
                 continue
         # If no function worked, raise an exception
-        raise TypeError(f"No valid parsing for value {val}")
+        exception_message = f"No valid parsing for value {val}. \nGot parsing errors:"
+        for error_message in error_messages:
+            exception_message += f'\n{error_message}'
+        raise TypeError(add_tab_to_new_lines(exception_message))
 
-    return _try_functions
+    return _try_decoding_functions
 
 
 def decode_union(*types: Type[T]) -> Callable[[Any], Union[T, Any]]:
@@ -221,7 +231,7 @@ def decode_union(*types: Type[T]) -> Callable[[Any], Union[T, Any]]:
         decode_optional(t) if optional else get_decoding_fn(t) for t in types
     ]
     # Try using each of the non-None types, in succession. Worst case, return the value.
-    return try_functions(*decoding_fns)
+    return try_decoding_functions(funcs=decoding_fns, types=types)
 
 
 def decode_list(t: Type[T]) -> Callable[[List[Any]], List[T]]:
@@ -314,11 +324,10 @@ def no_op(v: T) -> T:
 
 def try_constructor(t: Type[T]) -> Callable[[Any], Union[T, Any]]:
     """ Tries to use the type as a constructor. If that fails, returns the value as-is. """
-    return try_functions(lambda val: t(**val), lambda val: t(val))
+    funcs = [lambda val: t(**val), lambda val: t(val)]
+    return try_decoding_functions(funcs=funcs, types=[t, t])
 
 
 from pathlib import Path
 
 decode.register(Path, Path)
-
-

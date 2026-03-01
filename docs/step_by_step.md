@@ -172,6 +172,65 @@ Training my_third_exp...
     Saving to /share/experiments/my_third_exp
 ```
 
+## Lists and Dicts of Dataclasses
+`pyrallis` also supports `List[Dataclass]`, `Tuple[Dataclass, ...]`, and `Dict[str, Dataclass]` fields. These can be set from a config file in the natural YAML structure, **or directly from the command line as a YAML/JSON string**:
+
+```python
+from dataclasses import dataclass, field
+from typing import List, Dict
+import pyrallis
+
+@dataclass
+class DatasetConfig:
+    path: str = ''
+    split: str = 'train'
+
+@dataclass
+class TrainConfig:
+    # A list of datasets to train on
+    datasets: List[DatasetConfig] = field(default_factory=list)
+    # Named dataset overrides per evaluation task
+    eval_sets: Dict[str, DatasetConfig] = field(default_factory=dict)
+
+@pyrallis.wrap()
+def main(cfg: TrainConfig):
+    for ds in cfg.datasets:
+        print(f'Training on: {ds.path} (split={ds.split})')
+    for name, ds in cfg.eval_sets.items():
+        print(f'Eval {name}: {ds.path} (split={ds.split})')
+```
+
+Pass a YAML flow sequence or mapping from the command line:
+```console
+$ python train_model.py \
+    --datasets '[{path: /data/imagenet, split: train}, {path: /data/coco, split: train}]' \
+    --eval_sets '{imagenet_val: {path: /data/imagenet, split: val}, coco_val: {path: /data/coco, split: val}}'
+Training on: /data/imagenet (split=train)
+Training on: /data/coco (split=train)
+Eval imagenet_val: /data/imagenet (split=val)
+Eval coco_val: /data/coco (split=val)
+```
+
+The equivalent YAML config file uses the standard nested structure:
+```yaml
+datasets:
+  - path: /data/imagenet
+    split: train
+  - path: /data/coco
+    split: train
+eval_sets:
+  imagenet_val:
+    path: /data/imagenet
+    split: val
+  coco_val:
+    path: /data/coco
+    split: val
+```
+
+This also works with deeply nested structures -- for example a `List[Dataclass]` where each dataclass itself contains a `Dict[str, Dataclass]` field, and so on.
+
+> CLI args always take priority over the config file, so you can mix and match: load a base config from a file and override specific container fields on the command line.
+
 ## Easy Serialization
 As your config get longer you will probably want to start working with configuration files. Pyrallis supports encoding a dataclass configuration into a `yaml` file 💾
 

@@ -353,6 +353,15 @@ Reading sequences and dictionaries is done using the `yaml` syntax. Notice that 
 $ python train_model.py --worker_inds=[2,18,42] --worker_names="{2: 'George', 18: 'Ben'}"
 ```
 
+Collections can also contain dataclass types. `#!python typing.List[SomeDataclass]`, `#!python typing.Tuple[SomeDataclass, ...]`, and `#!python typing.Dict[str, SomeDataclass]` are all supported. From the command line these are passed as YAML/JSON strings:
+
+```console
+$ python train_model.py --points '[{x: 1.0, y: 2.0}, {x: 3.0, y: 4.0}]'
+$ python train_model.py --mapping '{origin: {x: 0.0, y: 0.0}, target: {x: 1.0, y: 2.0}}'
+```
+
+Deeply nested structures (e.g. a `List[Dataclass]` where each dataclass contains a `Dict[str, Dataclass]` field) are also supported.
+
 #### Typing Types
 
 `typing.Any`

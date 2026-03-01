@@ -51,11 +51,15 @@ class DataclassWrapper(Wrapper[Dataclass]):
             if not field.init:
                 continue
 
-            elif utils.is_tuple_or_list_of_dataclasses(field.type):
-                raise NotImplementedError(
-                    f"Field {field.name} is of type {field.type}, which isn't "
-                    f"supported yet. (container of a dataclass type)"
+            elif utils.is_tuple_or_list_of_dataclasses(field.type) or utils.is_dict_of_dataclasses(field.type):
+                # Container of dataclasses (List/Tuple/Dict) - treat as a regular field.
+                # Settable via config files, encode/decode, and via CLI as a YAML/JSON string
+                # (e.g. --points '[{x: 1.0, y: 2.0}]' or --mapping '{key: {x: 1.0}}').
+                field_wrapper = field_wrapper_class(field, parent=self, prefix=self.prefix)
+                logger.debug(
+                    f"wrapped container-of-dataclass field at {field_wrapper.dest} has a default value of {field_wrapper.default}"
                 )
+                self.fields.append(field_wrapper)
 
             elif dataclasses.is_dataclass(field.type):
                 # handle a nested dataclass attribute

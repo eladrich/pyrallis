@@ -181,7 +181,7 @@ def HyperParameters(TaskHyperParameters):
         use_custom_likes: bool = True
 
         # Gender model settings
-        gender: TaskHyperParameters = TaskHyperParameters(
+        gender: TaskHyperParameters = field(default_factory=lambda: TaskHyperParameters(
             "gender",
             num_layers=1,
             num_units=32,
@@ -190,10 +190,10 @@ def HyperParameters(TaskHyperParameters):
             dropout_rate=0.1,
             use_image_features=True,
             use_likes=True,
-        )
+        ))
 
         # Age Group Model settings
-        age_group: TaskHyperParameters = TaskHyperParameters(
+        age_group: TaskHyperParameters = field(default_factory=lambda: TaskHyperParameters(
             "age_group",
             num_layers=2,
             num_units=64,
@@ -202,10 +202,10 @@ def HyperParameters(TaskHyperParameters):
             dropout_rate=0.1,
             use_image_features=True,
             use_likes=True,
-        )
+        ))
 
         # Personality Model(s) settings:
-        personality: TaskHyperParameters = TaskHyperParameters(
+        personality: TaskHyperParameters = field(default_factory=lambda: TaskHyperParameters(
             "personality",
             num_layers=1,
             num_units=8,
@@ -214,6 +214,6 @@ def HyperParameters(TaskHyperParameters):
             dropout_rate=0.1,
             use_image_features=False,
             use_likes=False,
-        )
+        ))
 
     return HyperParameters

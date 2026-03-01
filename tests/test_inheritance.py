@@ -22,8 +22,8 @@ class ExtendedC(Base, TestSetup):
 
 @dataclass
 class Inheritance(TestSetup):
-    ext_b: ExtendedB = ExtendedB()
-    ext_c: ExtendedC = ExtendedC()
+    ext_b: ExtendedB = field(default_factory=ExtendedB)
+    ext_c: ExtendedC = field(default_factory=ExtendedC)
 
 
 def test_simple_subclassing_no_args():

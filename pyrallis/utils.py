@@ -173,6 +173,15 @@ def is_tuple_or_list_of_dataclasses(t: Type) -> bool:
     return is_tuple_or_list(t) and is_dataclass_type(get_item_type(t))
 
 
+def is_dict_of_dataclasses(t: Type) -> bool:
+    if not is_dict(t):
+        return False
+    args = get_type_arguments(t)
+    if args and len(args) == 2:
+        return is_dataclass_type(args[1])
+    return False
+
+
 def contains_dataclass_type_arg(t: Type) -> bool:
     if is_dataclass_type(t):
         return True
